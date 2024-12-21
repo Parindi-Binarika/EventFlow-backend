@@ -37,12 +37,21 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
-        return ResponseEntity.ok(userService.update(id, updatedUser));
+        try {
+            return ResponseEntity.ok(userService.update(id, updatedUser));
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        userService.delete(id);
-        return ResponseEntity.noContent().build();
+        try {
+            userService.delete(id);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
