@@ -5,6 +5,8 @@ import jdk.jfr.Timestamp;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "batches")
@@ -33,4 +35,5 @@ public class Batch {
     protected void onCreate() {
         this.createdAt = LocalDateTime.now(); // Automatically set the current timestamp
     }
+
 }

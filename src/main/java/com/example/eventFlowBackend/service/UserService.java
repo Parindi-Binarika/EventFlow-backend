@@ -1,14 +1,17 @@
 package com.example.eventFlowBackend.service;
 
+import com.example.eventFlowBackend.entity.Batch;
 import com.example.eventFlowBackend.entity.Role;
 import com.example.eventFlowBackend.entity.User;
 import com.example.eventFlowBackend.payload.RegisterRequest;
+import com.example.eventFlowBackend.repository.BatchRepository;
 import com.example.eventFlowBackend.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserService {
@@ -20,7 +23,7 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User create(RegisterRequest request) {
+    public User create(User request) {
         User user = new User();
         user.setName(request.getName());
         user.setEmail(request.getEmail());

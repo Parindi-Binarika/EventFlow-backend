@@ -16,12 +16,16 @@ public class BatchController {
 
     @PostMapping
     public ResponseEntity<Batch> create(@RequestBody Batch batch) {
-        batchService.create(batch);
-        return ResponseEntity.ok(batch);
+        try {
+            batchService.create(batch);
+            return ResponseEntity.ok(batch);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(400).build();
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Batch> update(@PathVariable Integer id, @RequestBody Batch updatedBatch) {
+    public ResponseEntity<Batch> update(@PathVariable Long id, @RequestBody Batch updatedBatch) {
         try {
             return ResponseEntity.ok(batchService.update(id, updatedBatch));
         } catch (RuntimeException e) {
@@ -30,9 +34,13 @@ public class BatchController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) {
-        batchService.delete(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        try {
+            batchService.delete(id);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).build();
+        }
     }
 
     @GetMapping()

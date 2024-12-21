@@ -3,6 +3,8 @@ package com.example.eventFlowBackend.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Data
@@ -43,5 +45,6 @@ public class User {
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now(); // Automatically set the current timestamp
-    }
+    };
+
 }

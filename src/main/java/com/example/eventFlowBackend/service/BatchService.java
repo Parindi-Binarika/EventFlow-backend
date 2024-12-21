@@ -18,7 +18,7 @@ public class BatchService {
         batchRepository.save(batch);
     }
 
-    public Batch update(Integer id, Batch updatedBatch) {
+    public Batch update(Long id, Batch updatedBatch) {
         return batchRepository.findById(id).map(batch -> {
             batch.setBatchName(updatedBatch.getBatchName());
             batch.setCommonEmail(updatedBatch.getCommonEmail());
@@ -26,7 +26,7 @@ public class BatchService {
         }).orElseThrow(() -> new RuntimeException("Batch not found"));
     }
 
-    public void delete(Integer id) {
+    public void delete(Long id) {
         batchRepository.findById(id).map(batch -> {
             batch.setIsActive(false);
             return batchRepository.save(batch);
