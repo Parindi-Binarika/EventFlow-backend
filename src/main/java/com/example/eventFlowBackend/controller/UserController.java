@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/users")
@@ -18,9 +19,16 @@ public class UserController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> create(@RequestBody RegisterRequest request) {
-        User user = userService.create(request);
-        return ResponseEntity.ok(user);
+    public ResponseEntity<?> create(@RequestBody User request) {
+        try {
+            Optional<User> user = userService.findByEmail(request.getEmail());
+            if (user.isPresent()) {
+                return ResponseEntity.status(403).build();
+            }
+            return ResponseEntity.ok(userService.create(request));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(400).build();
+        }
     }
 
     @GetMapping
@@ -30,9 +38,11 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        return userService.findByID(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        try {
+            return ResponseEntity.ok(userService.findByID(id).get());
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("/{id}")
