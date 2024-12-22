@@ -36,7 +36,7 @@ public class StudentBatchService {
         StudentBatch studentBatch = new StudentBatch();
         studentBatch.setUser(user);
         studentBatch.setBatch(batch);
-        studentBatch.setDate(LocalDateTime.now());
+        studentBatch.setCreatedAt(LocalDateTime.now());
 
         return studentBatchRepository.save(studentBatch);
     }
