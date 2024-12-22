@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
+@Table(name = "student_batches")
 public class StudentBatch {
 
     @Id
@@ -22,7 +23,7 @@ public class StudentBatch {
     private Batch batch;
 
     @Column(nullable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime date;
+    private LocalDateTime createdAt;
 
     // Getters and Setters
 }

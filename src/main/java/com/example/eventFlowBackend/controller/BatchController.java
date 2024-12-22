@@ -48,4 +48,13 @@ public class BatchController {
         return ResponseEntity.ok(batchService.findAll());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Batch> getBatchById(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(batchService.findById(id));
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }
