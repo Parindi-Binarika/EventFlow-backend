@@ -4,6 +4,7 @@ import com.example.eventFlowBackend.entity.Batch;
 import com.example.eventFlowBackend.entity.Role;
 import com.example.eventFlowBackend.entity.User;
 import com.example.eventFlowBackend.payload.RegisterRequest;
+import com.example.eventFlowBackend.payload.UserUpdateRequest;
 import com.example.eventFlowBackend.repository.BatchRepository;
 import com.example.eventFlowBackend.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,15 +36,13 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User update(Long id, User updatedUser) {
+    public User update(Long id, UserUpdateRequest updatedUser) {
         return userRepository.findById(id).map(user -> {
             user.setName(updatedUser.getName());
             user.setEmail(updatedUser.getEmail());
             user.setMobile(updatedUser.getMobile());
             user.setNic(updatedUser.getNic());
-            user.setCreatedBy(updatedUser.getCreatedBy());
             user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
-            user.setRole(updatedUser.getRole());
             return userRepository.save(user);
         }).orElseThrow(() -> new RuntimeException("User not found"));
     }

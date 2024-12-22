@@ -2,6 +2,7 @@ package com.example.eventFlowBackend.controller;
 
 import com.example.eventFlowBackend.entity.User;
 import com.example.eventFlowBackend.payload.RegisterRequest;
+import com.example.eventFlowBackend.payload.UserUpdateRequest;
 import com.example.eventFlowBackend.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,8 @@ public class UserController {
             if (user.isPresent()) {
                 return ResponseEntity.status(403).build();
             }
-            return ResponseEntity.ok(userService.create(request));
+            userService.create(request);
+            return ResponseEntity.status(200).body("User created successfully");
         } catch (RuntimeException e) {
             return ResponseEntity.status(400).build();
         }
@@ -46,10 +48,11 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody UserUpdateRequest updatedUser) {
         try {
             return ResponseEntity.ok(userService.update(id, updatedUser));
         } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
             return ResponseEntity.notFound().build();
         }
 
