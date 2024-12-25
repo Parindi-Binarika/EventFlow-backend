@@ -2,6 +2,8 @@ package com.example.eventFlowBackend.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.engine.jdbc.batch.spi.Batch;
+
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -36,15 +38,18 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
-    @Column(nullable = true)
-    private Integer createdBy;
+    @ManyToOne
+    @JoinColumn(name = "createdBy",referencedColumnName = "uID", nullable = true)
+    private User createdBy;
 
-    @Column(nullable = false, updatable = false)
+    @Column(updatable = false )
     private LocalDateTime createdAt;
 
     @PrePersist
     protected void onCreate() {
-        this.createdAt = LocalDateTime.now(); // Automatically set the current timestamp
-    };
+        if (this.createdAt == null) {
+            this.createdAt = LocalDateTime.now();
+        }
+    }
 
 }

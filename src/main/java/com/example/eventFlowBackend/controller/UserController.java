@@ -1,8 +1,7 @@
 package com.example.eventFlowBackend.controller;
 
 import com.example.eventFlowBackend.entity.User;
-import com.example.eventFlowBackend.payload.RegisterRequest;
-import com.example.eventFlowBackend.payload.UserUpdateRequest;
+import com.example.eventFlowBackend.payload.UserDTO;
 import com.example.eventFlowBackend.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +19,7 @@ public class UserController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> create(@RequestBody User request) {
+    public ResponseEntity<?> create(@RequestBody UserDTO request) {
         try {
             Optional<User> user = userService.findByEmail(request.getEmail());
             if (user.isPresent()) {
@@ -33,38 +32,60 @@ public class UserController {
         }
     }
 
-    @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        return ResponseEntity.ok(userService.findAllUsers());
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        try {
-            return ResponseEntity.ok(userService.findByID(id).get());
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody UserUpdateRequest updatedUser) {
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
         try {
-            return ResponseEntity.ok(userService.update(id, updatedUser));
+            userService.update(id, updatedUser);
+            return ResponseEntity.status(200).body("User updated successfully");
         } catch (RuntimeException e) {
-            System.out.println(e.getMessage());
             return ResponseEntity.notFound().build();
         }
+    }
 
+    @PutMapping("/password/{id}")
+    public ResponseEntity<?> updatePassword(@PathVariable Long id, @RequestBody User request) {
+        try {
+            userService.updatePassword(id, request);
+            return ResponseEntity.status(200).body("Password updated successfully");
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
         try {
             userService.delete(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.status(200).body("User deleted successfully");
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        return ResponseEntity.ok(userService.findByIsActiveTrue());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Optional<User>> getUserById(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(userService.findByID(id));
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/search/{nic}")
+    public ResponseEntity<List<UserDTO>> searchByNic(@PathVariable String nic) {
+        try {
+            return ResponseEntity.ok(userService.findByNicStartingWith(nic));
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
+
+
 }

@@ -1,18 +1,15 @@
 package com.example.eventFlowBackend.service;
 
-import com.example.eventFlowBackend.entity.Batch;
 import com.example.eventFlowBackend.entity.Role;
 import com.example.eventFlowBackend.entity.User;
-import com.example.eventFlowBackend.payload.RegisterRequest;
-import com.example.eventFlowBackend.payload.UserUpdateRequest;
-import com.example.eventFlowBackend.repository.BatchRepository;
+import com.example.eventFlowBackend.payload.UserDTO;
 import com.example.eventFlowBackend.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class UserService {
@@ -24,25 +21,36 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User create(User request) {
-        User user = new User();
-        user.setName(request.getName());
-        user.setEmail(request.getEmail());
-        user.setMobile(request.getMobile());
-        user.setNic(request.getNic());
-        user.setCreatedBy(request.getCreatedBy());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole(Role.valueOf(request.getRole().name()));
-        return userRepository.save(user);
+    public User create(UserDTO request) {
+        try {
+            User user = new User();
+            user.setName(request.getName());
+            user.setEmail(request.getEmail());
+            user.setMobile(request.getMobile());
+            user.setNic(request.getNic());
+            user.setCreatedBy(userRepository.findById(Long.valueOf(request.getCreatedBy())).orElseThrow(() -> new RuntimeException("User not found")));
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+            user.setRole(Role.valueOf(request.getRole().name()));
+            return userRepository.save(user);
+        } catch (Exception e) {
+            throw new RuntimeException("User not created");
+        }
+
     }
 
-    public User update(Long id, UserUpdateRequest updatedUser) {
-        return userRepository.findById(id).map(user -> {
+    public void update(Long id, User updatedUser) {
+        userRepository.findById(id).map(user -> {
             user.setName(updatedUser.getName());
             user.setEmail(updatedUser.getEmail());
             user.setMobile(updatedUser.getMobile());
             user.setNic(updatedUser.getNic());
-            user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+            return userRepository.save(user);
+        }).orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    public void updatePassword(Long id, User request) {
+        userRepository.findById(id).map(user -> {
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
             return userRepository.save(user);
         }).orElseThrow(() -> new RuntimeException("User not found"));
     }
@@ -54,16 +62,44 @@ public class UserService {
         }).orElseThrow(()-> new RuntimeException("User not found"));
     }
 
+    public List<UserDTO> findByIsActiveTrue() {
+       List<UserDTO> users = new ArrayList<>();
+         userRepository.findByIsActiveTrue().forEach(user -> {
+              UserDTO userDTO = new UserDTO();
+              userDTO.setUID(user.getUID());
+              userDTO.setName(user.getName());
+              userDTO.setEmail(user.getEmail());
+              userDTO.setMobile(user.getMobile());
+              userDTO.setNic(user.getNic());
+              userDTO.setRole(user.getRole());
+              userDTO.setCreatedBy(user.getCreatedBy().getUID());
+              users.add(userDTO);
+         });
+            return users;
+    }
+
     public Optional<User> findByID(Long id) {
         return userRepository.findById(id);
     }
 
-    public Optional<User> findByEmail(String email) {
-        return Optional.ofNullable(userRepository.findByEmail(email));
+    public List<UserDTO> findByNicStartingWith(String nic) {
+        List<UserDTO> users = new ArrayList<>();
+        userRepository.findByNicStartingWithAndIsActiveTrue(nic).forEach(user -> {
+            UserDTO userDTO = new UserDTO();
+            userDTO.setUID(user.getUID());
+            userDTO.setName(user.getName());
+            userDTO.setEmail(user.getEmail());
+            userDTO.setMobile(user.getMobile());
+            userDTO.setNic(user.getNic());
+            userDTO.setRole(user.getRole());
+            userDTO.setCreatedBy(user.getCreatedBy().getUID());
+            users.add(userDTO);
+        });
+        return users;
     }
 
-    public List<User> findAllUsers() {
-        return userRepository.findAll();
+    public Optional<User> findByEmail(String email) {
+        return Optional.ofNullable(userRepository.findByEmail(email));
     }
 
 
