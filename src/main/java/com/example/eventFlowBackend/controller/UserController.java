@@ -1,6 +1,7 @@
 package com.example.eventFlowBackend.controller;
 
 import com.example.eventFlowBackend.entity.User;
+import com.example.eventFlowBackend.payload.BatchDTO;
 import com.example.eventFlowBackend.payload.UserDTO;
 import com.example.eventFlowBackend.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -65,6 +66,16 @@ public class UserController {
     @GetMapping
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         return ResponseEntity.ok(userService.findByIsActiveTrue());
+    }
+
+    @GetMapping("/batch/{uID}")
+    public ResponseEntity<List<BatchDTO>> getAllBatchesByUID(@PathVariable Long uID) {
+        try {
+            return ResponseEntity.ok(userService.findBatchesByUser(uID));
+        } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/{id}")

@@ -2,7 +2,9 @@ package com.example.eventFlowBackend.service;
 
 import com.example.eventFlowBackend.entity.Role;
 import com.example.eventFlowBackend.entity.User;
+import com.example.eventFlowBackend.payload.BatchDTO;
 import com.example.eventFlowBackend.payload.UserDTO;
+import com.example.eventFlowBackend.repository.StudentBatchRepository;
 import com.example.eventFlowBackend.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,11 +16,13 @@ import java.util.Optional;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final StudentBatchRepository studentBatchRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, StudentBatchRepository studentBatchRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.studentBatchRepository = studentBatchRepository;
     }
 
     public User create(UserDTO request) {
@@ -76,6 +80,19 @@ public class UserService {
               users.add(userDTO);
          });
             return users;
+    }
+
+    public List<BatchDTO> findBatchesByUser(Long uID) {
+        List<BatchDTO> batches = new ArrayList<>();
+        studentBatchRepository.findByUser_uID(uID).forEach(studentBatch -> {
+            BatchDTO batchDTO = new BatchDTO();
+            batchDTO.setBID(studentBatch.getBatch().getBID());
+            batchDTO.setBatchName(studentBatch.getBatch().getBatchName());
+            batchDTO.setCommonEmail(studentBatch.getBatch().getCommonEmail());
+            batches.add(batchDTO);
+        });
+
+        return batches;
     }
 
     public Optional<User> findByID(Long id) {
