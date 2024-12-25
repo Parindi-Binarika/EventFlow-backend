@@ -17,9 +17,20 @@ public class BatchController {
     @PostMapping
     public ResponseEntity<Batch> create(@RequestBody Batch batch) {
         try {
-            batchService.create(batch);
-            return ResponseEntity.ok(batch);
+            Batch resBatch = batchService.create(batch);
+            return ResponseEntity.status(200).build();
         } catch (RuntimeException e) {
+            return ResponseEntity.status(400).build();
+        }
+    }
+
+    @PostMapping("/assign/{bID}/{uID}")
+    public ResponseEntity<Batch> assignUser(@PathVariable Long bID, @PathVariable Long uID) {
+        try {
+            batchService.assignUser(bID, uID);
+            return ResponseEntity.status(200).build();
+        } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
             return ResponseEntity.status(400).build();
         }
     }
@@ -27,7 +38,8 @@ public class BatchController {
     @PutMapping("/{id}")
     public ResponseEntity<Batch> update(@PathVariable Long id, @RequestBody Batch updatedBatch) {
         try {
-            return ResponseEntity.ok(batchService.update(id, updatedBatch));
+            batchService.update(id, updatedBatch);
+            return ResponseEntity.status(200).build();
         } catch (RuntimeException e) {
             return ResponseEntity.status(404).build();
         }
@@ -37,7 +49,17 @@ public class BatchController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         try {
             batchService.delete(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.status(200).build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).build();
+        }
+    }
+
+    @DeleteMapping("/assign/{id}")
+    public ResponseEntity<Void> unassignUser(@PathVariable Long id) {
+        try {
+            batchService.unassignUser(id);
+            return ResponseEntity.status(200).build();
         } catch (RuntimeException e) {
             return ResponseEntity.status(404).build();
         }
@@ -56,5 +78,16 @@ public class BatchController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/allStudents/{bID}")
+    public ResponseEntity<?> getAllStudents(@PathVariable Long bID) {
+        try {
+            return ResponseEntity.ok(batchService.findUsersByBatch(bID));
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
 
 }

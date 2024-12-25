@@ -15,16 +15,16 @@ public class StudentBatch {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "uID", nullable = false)
+    @JoinColumn(name = "uID", referencedColumnName = "uID", nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "bID", nullable = false)
+    @JoinColumn(name = "bID", referencedColumnName = "bID", nullable = false)
     private Batch batch;
 
     @Column(nullable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
-    // Getters and Setters
+
 }
 
