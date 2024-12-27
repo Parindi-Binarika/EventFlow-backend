@@ -15,19 +15,12 @@ public class Event {
 
     @Column(nullable = false, length = 100)
     private String title;
-    @Column(nullable = false, length = 254)
+    @Column(nullable = false, length = 255)
     private String description;
     @Column(nullable = false)
     private LocalDateTime startDateTime;
     @Column(nullable = false)
     private EventType eventType;
-    @Column(columnDefinition = "BOOLEAN DEFAULT TRUE")
+    @Column(nullable = false)
     private Boolean isActive = true;
-    @ManyToOne
-    @JoinColumn(name = "createdBy", referencedColumnName = "uID", nullable = false)
-    private User createdBy;
-
-    @OneToOne
-    @JoinColumn(name = "aID", referencedColumnName = "aID")
-    private Announcement announcement;
 }
