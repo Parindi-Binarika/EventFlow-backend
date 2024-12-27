@@ -1,6 +1,5 @@
 package com.example.eventFlowBackend.entity;
 
-
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -25,3 +24,4 @@ public class AnnouncementStudent {
         this.createdAt = LocalDateTime.now();
     }
 }
+

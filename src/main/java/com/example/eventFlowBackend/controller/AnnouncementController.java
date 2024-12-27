@@ -2,11 +2,8 @@ package com.example.eventFlowBackend.controller;
 
 import com.example.eventFlowBackend.payload.AnnouncementDTO;
 import com.example.eventFlowBackend.service.AnnouncementService;
-import com.example.eventFlowBackend.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.PublicKey;
 
 @RestController
 @RequestMapping("/api/announcements")

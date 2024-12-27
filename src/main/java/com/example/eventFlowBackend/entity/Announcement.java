@@ -24,5 +24,5 @@ public class Announcement {
     @Column(columnDefinition = "BOOLEAN DEFAULT TRUE")
     private Boolean isSent = false;
 
-
 }
+

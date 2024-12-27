@@ -124,7 +124,7 @@ public class AnnouncementService {
     public List<AnnouncementDTO> getAllSendAnnouncements(Integer userId) {
         List<AnnouncementDTO> announcementDTOS = new ArrayList<>();
         try {
-            announcementRepository.findByCreatedBy_uIDAndIsSentFalse(userId).forEach(announcement -> {
+            announcementRepository.findByCreatedBy_uIDAndIsSentTrue(userId).forEach(announcement -> {
                 AnnouncementDTO announcementDTO = new AnnouncementDTO();
                 announcementDTO.setAID(announcement.getAID());
                 announcementDTO.setSubject(announcement.getSubject());

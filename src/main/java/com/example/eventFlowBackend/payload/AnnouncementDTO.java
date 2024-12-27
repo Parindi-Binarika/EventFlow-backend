@@ -1,6 +1,7 @@
 package com.example.eventFlowBackend.payload;
 
 import lombok.Data;
+
 @Data
 public class AnnouncementDTO {
     private Integer aID;
