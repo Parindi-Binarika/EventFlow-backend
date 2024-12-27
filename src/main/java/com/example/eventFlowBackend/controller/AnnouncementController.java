@@ -1,10 +1,12 @@
 package com.example.eventFlowBackend.controller;
 
-import com.example.eventFlowBackend.entity.Announcement;
 import com.example.eventFlowBackend.payload.AnnouncementDTO;
 import com.example.eventFlowBackend.service.AnnouncementService;
+import com.example.eventFlowBackend.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.PublicKey;
 
 @RestController
 @RequestMapping("/api/announcements")
@@ -19,12 +21,8 @@ public class AnnouncementController {
     @PostMapping
     public ResponseEntity<?> create(@RequestBody AnnouncementDTO announcementDTO) {
         try {
-            AnnouncementDTO resannouncementDTO = new AnnouncementDTO();
-            Announcement announcement = announcementService.createAnnouncement(announcementDTO);
-            resannouncementDTO.setAID(announcement.getAID());
-            resannouncementDTO.setSubject(announcement.getSubject());
-            resannouncementDTO.setMessage(announcement.getMessage());
-            return ResponseEntity.ok(resannouncementDTO);
+            announcementService.createAnnouncement(announcementDTO);
+            return ResponseEntity.status(200).body("Announcement created successfully");
         } catch (RuntimeException e) {
             return ResponseEntity.status(400).body("Failed to create announcement");
         }
@@ -67,16 +65,6 @@ public class AnnouncementController {
             return ResponseEntity.status(200).body("Announcement updated successfully");
         } catch (RuntimeException e) {
             return ResponseEntity.status(404).body("Announcement not found");
-        }
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Integer id) {
-        try {
-            announcementService.deleteAnnouncement(id);
-            return ResponseEntity.status(200).body("Announcement deleted successfully");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(400).body("Announcement cannot be deleted");
         }
     }
 

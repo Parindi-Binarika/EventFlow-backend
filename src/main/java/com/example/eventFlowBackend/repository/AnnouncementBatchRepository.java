@@ -8,7 +8,6 @@ import java.util.List;
 
 public interface AnnouncementBatchRepository extends JpaRepository<AnnouncementBatch, Integer> {
     List<AnnouncementBatch> findByAnnouncement_aID(Integer announcementId);
-    void deleteByAnnouncement_aID(Integer announcementId);
 
 
 }
