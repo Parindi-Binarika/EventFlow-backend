@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface AnnouncementStudentRepository extends JpaRepository<AnnouncementStudent, Integer> {
     List<AnnouncementStudent> findByAnnouncement_aID(Integer announcementId);
+    void deleteByAnnouncement_aID(Integer announcementId);
 }
