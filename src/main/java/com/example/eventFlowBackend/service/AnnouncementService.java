@@ -29,14 +29,13 @@ public class AnnouncementService {
         this.announcementStudentRepository = announcementStudentRepository;
     }
 
-    public Integer createAnnouncement(AnnouncementDTO announcementDTO) {
+    public Announcement createAnnouncement(AnnouncementDTO announcementDTO) {
         try {
             Announcement announcement = new Announcement();
             announcement.setSubject(announcementDTO.getSubject());
             announcement.setMessage(announcementDTO.getMessage());
             announcement.setCreatedBy(userRepository.findById(announcementDTO.getCreatedBy()).get());
-            Announcement createdAnn = announcementRepository.save(announcement);
-            return createdAnn.getAID();
+            return announcementRepository.save(announcement);
         } catch (Exception e) {
             throw new RuntimeException("Failed to create announcement");
         }
@@ -76,6 +75,20 @@ public class AnnouncementService {
             announcementRepository.save(announcement);
         } catch (Exception e) {
             throw new RuntimeException("Failed to update announcement");
+        }
+    }
+
+    public void deleteAnnouncement(Integer id) {
+        try {
+            Announcement announcement = announcementRepository.findById(id).get();
+            if(announcement.getIsSent()) {
+                throw new RuntimeException("Cannot delete sent announcement");
+            }
+            announcementBatchRepository.deleteByAnnouncement_aID(id);
+            announcementStudentRepository.deleteByAnnouncement_aID(id);
+            announcementRepository.delete(announcement);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to delete announcement");
         }
     }
 
