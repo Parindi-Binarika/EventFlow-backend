@@ -15,14 +15,11 @@ public class Announcement {
     private String subject;
 
     @Column(nullable = false, length = 255)
-    private String massage;
+    private String message;
 
     @ManyToOne
     @JoinColumn(name = "createdBy",referencedColumnName = "uID", nullable = false)
     private User createdBy;
-
-    @Column(columnDefinition = "BOOLEAN DEFAULT TRUE")
-    private Boolean isActive = true;
 
     @Column(columnDefinition = "BOOLEAN DEFAULT TRUE")
     private Boolean isSent = false;

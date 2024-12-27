@@ -29,15 +29,14 @@ public class AnnouncementService {
         this.announcementStudentRepository = announcementStudentRepository;
     }
 
-    public void createAnnouncement(AnnouncementDTO announcementDTO) {
+    public Integer createAnnouncement(AnnouncementDTO announcementDTO) {
         try {
             Announcement announcement = new Announcement();
             announcement.setSubject(announcementDTO.getSubject());
-            announcement.setMassage(announcementDTO.getMassage());
+            announcement.setMessage(announcementDTO.getMessage());
             announcement.setCreatedBy(userRepository.findById(announcementDTO.getCreatedBy()).get());
-            announcement.setIsActive(announcementDTO.getIsActive());
-            announcement.setIsActive(announcementDTO.isSent());
-            announcementRepository.save(announcement);
+            Announcement createdAnn = announcementRepository.save(announcement);
+            return createdAnn.getAID();
         } catch (Exception e) {
             throw new RuntimeException("Failed to create announcement");
         }
@@ -73,20 +72,10 @@ public class AnnouncementService {
         try {
             Announcement announcement = announcementRepository.findById(id).get();
             announcement.setSubject(announcementDTO.getSubject());
-            announcement.setMassage(announcementDTO.getMassage());
+            announcement.setMessage(announcementDTO.getMessage());
             announcementRepository.save(announcement);
         } catch (Exception e) {
             throw new RuntimeException("Failed to update announcement");
-        }
-    }
-
-    public void deleteAnnouncement(Integer aID) {
-        try {
-            Announcement announcement = announcementRepository.findById(aID).orElseThrow(() -> new RuntimeException("Announcement not found"));
-            announcement.setIsActive(false);
-            announcementRepository.save(announcement);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to delete announcement");
         }
     }
 
@@ -118,16 +107,54 @@ public class AnnouncementService {
         }
     }
 
-    public Announcement getAnnouncement(Integer aID) {
-        return announcementRepository.findById(aID).orElseThrow(() -> new RuntimeException("Announcement not found"));
+    public AnnouncementDTO getAnnouncement(Integer aID) {
+        AnnouncementDTO announcementDTO = new AnnouncementDTO();
+        try {
+            Announcement announcement = announcementRepository.findById(aID).orElseThrow(() -> new RuntimeException("Announcement not found"));
+            announcementDTO.setSubject(announcement.getSubject());
+            announcementDTO.setMessage(announcement.getMessage());
+            announcementDTO.setCreatedBy(Long.valueOf(announcement.getCreatedBy().getUID()));
+            announcementDTO.setSent(announcement.getIsSent());
+            return announcementDTO;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to get announcement");
+        }
     }
 
-    public List<Announcement> getAllSendAnnouncements(Integer userId) {
-        return announcementRepository.findByCreatedBy_uIDAndIsActiveTrueAndIsSentTrue(userId);
+    public List<AnnouncementDTO> getAllSendAnnouncements(Integer userId) {
+        List<AnnouncementDTO> announcementDTOS = new ArrayList<>();
+        try {
+            announcementRepository.findByCreatedBy_uIDAndIsSentFalse(userId).forEach(announcement -> {
+                AnnouncementDTO announcementDTO = new AnnouncementDTO();
+                announcementDTO.setAID(announcement.getAID());
+                announcementDTO.setSubject(announcement.getSubject());
+                announcementDTO.setMessage(announcement.getMessage());
+                announcementDTO.setCreatedBy(Long.valueOf(announcement.getCreatedBy().getUID()));
+                announcementDTO.setSent(announcement.getIsSent());
+                announcementDTOS.add(announcementDTO);
+            });
+            return announcementDTOS;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to get send announcements");
+        }
     }
 
-    public List<Announcement> getAllDraftAnnouncements(Integer userId) {
-        return announcementRepository.findByCreatedBy_uIDAndIsActiveTrueAndIsSentFalse(userId);
+    public List<AnnouncementDTO> getAllDraftAnnouncements(Integer userId) {
+        List<AnnouncementDTO> announcementDTOS = new ArrayList<>();
+        try {
+            announcementRepository.findByCreatedBy_uIDAndIsSentFalse(userId).forEach(announcement -> {
+                AnnouncementDTO announcementDTO = new AnnouncementDTO();
+                announcementDTO.setAID(announcement.getAID());
+                announcementDTO.setSubject(announcement.getSubject());
+                announcementDTO.setMessage(announcement.getMessage());
+                announcementDTO.setCreatedBy(Long.valueOf(announcement.getCreatedBy().getUID()));
+                announcementDTO.setSent(announcement.getIsSent());
+                announcementDTOS.add(announcementDTO);
+            });
+            return announcementDTOS;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to get draft announcements");
+        }
     }
 
     public List<AssignedBatchResponse> getAssignBatchesByaID(Integer aID) {

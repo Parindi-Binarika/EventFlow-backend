@@ -2,6 +2,7 @@ package com.example.eventFlowBackend.controller;
 
 import com.example.eventFlowBackend.payload.AnnouncementDTO;
 import com.example.eventFlowBackend.service.AnnouncementService;
+import com.example.eventFlowBackend.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,7 +48,7 @@ public class AnnouncementController {
         }
     }
 
-    @PostMapping("/send/{aid}")
+    @PutMapping("/send/{aid}")
     public ResponseEntity<?> sendAnnouncement(@PathVariable Integer aid) {
         try {
             announcementService.sendAnnouncement(aid);
@@ -67,17 +68,7 @@ public class AnnouncementController {
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Integer id) {
-        try {
-            announcementService.deleteAnnouncement(id);
-            return ResponseEntity.status(200).body("Announcement deleted successfully");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(404).body("Announcement not found");
-        }
-    }
-
-    @DeleteMapping("/assign/batch/{id}")
+    @DeleteMapping("/unassign/batch/{id}")
     public ResponseEntity<?> unassignBatch(@PathVariable Integer id) {
         try {
             announcementService.unassignBatch(id);
@@ -87,7 +78,7 @@ public class AnnouncementController {
         }
     }
 
-    @DeleteMapping("/assign/student/{id}")
+    @DeleteMapping("/unassign/student/{id}")
     public ResponseEntity<?> unassignStudent(@PathVariable Integer id) {
         try {
             announcementService.unassignStudent(id);
