@@ -16,9 +16,6 @@ public class Feedback {
     private String feedback;
     @Column(nullable = false)
     private FeedbackType feedbackType;
-    @ManyToOne
-    @JoinColumn(name = "uID", referencedColumnName = "uID")
-    private User createdBy;
 
     @Column(nullable = false)
     private LocalDateTime createdDateTime;

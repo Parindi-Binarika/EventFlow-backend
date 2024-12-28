@@ -122,12 +122,11 @@ public class EventService {
         }
     }
 
-    public void markAttendance(Integer eID, Long uID, Integer points) {
+    public void markAttendance(Integer eID, Long uID) {
         try {
             StudentEvent studentEvent = new StudentEvent();
             studentEvent.setEvent(eventRepository.findById(eID).get());
             studentEvent.setUser(userRepository.findById(uID).get());
-            studentEvent.setPoints(points);
             studentEventRepository.save(studentEvent);
         } catch (Exception e) {
             throw new RuntimeException("Failed to mark attendance");

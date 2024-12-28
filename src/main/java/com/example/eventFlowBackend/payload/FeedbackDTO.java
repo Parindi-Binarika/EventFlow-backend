@@ -9,6 +9,5 @@ public class FeedbackDTO {
     private Integer fID;
     private String feedback;
     private FeedbackType feedbackType;
-    private Integer createdByUserId; // To represent the User entity
     private LocalDateTime createdDateTime;
 }

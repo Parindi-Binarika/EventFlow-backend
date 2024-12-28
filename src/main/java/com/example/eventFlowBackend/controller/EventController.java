@@ -40,10 +40,10 @@ public class EventController {
         }
     }
 
-    @PostMapping("/attendance/{eID}/{uID}/{points}")
-    public ResponseEntity<?> markAttendance(@PathVariable Integer eID, @PathVariable Integer uID, @PathVariable Integer points) {
+    @PostMapping("/attendance/{eID}/{uID}")
+    public ResponseEntity<?> markAttendance(@PathVariable Integer eID, @PathVariable Integer uID) {
         try {
-            eventService.markAttendance(eID, Long.valueOf(uID), points);
+            eventService.markAttendance(eID, Long.valueOf(uID));
             return ResponseEntity.ok("Attendance marked successfully");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Failed to mark attendance");
