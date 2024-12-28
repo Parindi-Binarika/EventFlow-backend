@@ -2,9 +2,12 @@ package com.example.eventFlowBackend.service;
 
 import com.example.eventFlowBackend.entity.Event;
 import com.example.eventFlowBackend.entity.EventType;
+import com.example.eventFlowBackend.entity.StudentEvent;
+import com.example.eventFlowBackend.payload.EventAttendanceDTO;
 import com.example.eventFlowBackend.payload.EventDTO;
 import com.example.eventFlowBackend.repository.AnnouncementRepository;
 import com.example.eventFlowBackend.repository.EventRepository;
+import com.example.eventFlowBackend.repository.StudentEventRepository;
 import com.example.eventFlowBackend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -18,10 +21,13 @@ public class EventService {
     UserRepository userRepository;
     AnnouncementRepository announcementRepository;
 
-    public EventService(EventRepository eventRepository, UserRepository userRepository, AnnouncementRepository announcementRepository) {
+    StudentEventRepository studentEventRepository;
+
+    public EventService(EventRepository eventRepository, UserRepository userRepository, AnnouncementRepository announcementRepository, StudentEventRepository studentEventRepository) {
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
         this.announcementRepository = announcementRepository;
+        this.studentEventRepository = studentEventRepository;
     }
 
     public void create(EventDTO eventDTO, EventType eventType) {
@@ -113,6 +119,80 @@ public class EventService {
             return eventDTOs;
         } catch (Exception e) {
             throw new RuntimeException("Failed to get events");
+        }
+    }
+
+    public void markAttendance(Integer eID, Long uID, Integer points) {
+        try {
+            StudentEvent studentEvent = new StudentEvent();
+            studentEvent.setEvent(eventRepository.findById(eID).get());
+            studentEvent.setUser(userRepository.findById(uID).get());
+            studentEvent.setPoints(points);
+            studentEventRepository.save(studentEvent);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to mark attendance");
+        }
+    }
+
+    public void deleteAttendance(Integer seID) {
+        try {
+            studentEventRepository.deleteById(seID);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to delete attendance");
+        }
+    }
+
+    public void updateAttendance(Integer seID, Integer points) {
+        try {
+            StudentEvent studentEvent = studentEventRepository.findById(seID).get();
+            studentEvent.setPoints(points);
+            studentEventRepository.save(studentEvent);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to update attendance");
+        }
+    }
+
+    public List<EventAttendanceDTO> getAttendance(Integer eID) {
+        try {
+            List<EventAttendanceDTO> eventAttendanceDTOs = new ArrayList<>();
+            studentEventRepository.findAllByEvent_eID(eID).forEach(studentEvent -> {
+                EventAttendanceDTO eventAttendanceDTO = new EventAttendanceDTO();
+                eventAttendanceDTO.setSeID(studentEvent.getId());
+                eventAttendanceDTO.setUID(studentEvent.getUser().getUID().intValue());
+                eventAttendanceDTO.setEID(studentEvent.getEvent().getEID());
+                eventAttendanceDTO.setTitle(studentEvent.getEvent().getTitle());
+                eventAttendanceDTO.setDescription(studentEvent.getEvent().getDescription());
+                eventAttendanceDTO.setPoints(studentEvent.getPoints());
+                eventAttendanceDTO.setStudentName(studentEvent.getUser().getName());
+                eventAttendanceDTO.setMobile(studentEvent.getUser().getMobile());
+                eventAttendanceDTO.setDate(studentEvent.getDate());
+                eventAttendanceDTOs.add(eventAttendanceDTO);
+            });
+            return eventAttendanceDTOs;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to get attendance");
+        }
+    }
+
+    public List<EventAttendanceDTO> getAttendanceByUser(Long uID) {
+        try {
+            List<EventAttendanceDTO> eventAttendanceDTOs = new ArrayList<>();
+            studentEventRepository.findAllByUser_uID(Math.toIntExact(uID)).forEach(studentEvent -> {
+                EventAttendanceDTO eventAttendanceDTO = new EventAttendanceDTO();
+                eventAttendanceDTO.setSeID(studentEvent.getId());
+                eventAttendanceDTO.setUID(studentEvent.getUser().getUID().intValue());
+                eventAttendanceDTO.setEID(studentEvent.getEvent().getEID());
+                eventAttendanceDTO.setTitle(studentEvent.getEvent().getTitle());
+                eventAttendanceDTO.setDescription(studentEvent.getEvent().getDescription());
+                eventAttendanceDTO.setPoints(studentEvent.getPoints());
+                eventAttendanceDTO.setStudentName(studentEvent.getUser().getName());
+                eventAttendanceDTO.setMobile(studentEvent.getUser().getMobile());
+                eventAttendanceDTO.setDate(studentEvent.getDate());
+                eventAttendanceDTOs.add(eventAttendanceDTO);
+            });
+            return eventAttendanceDTOs;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to get attendance");
         }
     }
 }
