@@ -5,7 +5,9 @@ import com.example.eventFlowBackend.entity.FeedbackType;
 import com.example.eventFlowBackend.payload.FeedbackDTO;
 import com.example.eventFlowBackend.repository.FeedbackRepository;
 import com.example.eventFlowBackend.repository.UserRepository;
+import org.springframework.stereotype.Service;
 
+@Service
 public class FeedbackService {
 
     FeedbackRepository feedbackRepository;
