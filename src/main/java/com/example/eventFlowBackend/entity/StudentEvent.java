@@ -19,7 +19,7 @@ public class StudentEvent {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "event_id", referencedColumnName = "eID")
+    @JoinColumn(name = "eID", referencedColumnName = "eID")
     private Event event;
 
     @Column

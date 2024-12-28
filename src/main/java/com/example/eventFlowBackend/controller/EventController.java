@@ -40,6 +40,17 @@ public class EventController {
         }
     }
 
+    @PostMapping("/attendance/{eID}/{uID}/{points}")
+    public ResponseEntity<?> markAttendance(@PathVariable Integer eID, @PathVariable Integer uID, @PathVariable Integer points) {
+        try {
+            eventService.markAttendance(eID, Long.valueOf(uID), points);
+            return ResponseEntity.ok("Attendance marked successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Failed to mark attendance");
+        }
+    }
+
+
     @PutMapping("/{eID}")
     public ResponseEntity<?> update(@PathVariable Integer eID, @RequestBody EventDTO event) {
         try {
@@ -75,6 +86,16 @@ public class EventController {
         }
     }
 
+    @PutMapping("/attendance/{seID}/{points}")
+    public ResponseEntity<?> updateAttendance(@PathVariable Integer seID, @PathVariable Integer points) {
+        try {
+            eventService.updateAttendance(seID, points);
+            return ResponseEntity.ok("Attendance updated successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Failed to update attendance");
+        }
+    }
+
     @DeleteMapping("/{eID}")
     public ResponseEntity<?> delete(@PathVariable Integer eID) {
         try {
@@ -82,6 +103,16 @@ public class EventController {
             return ResponseEntity.ok("Event deleted successfully");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Failed to delete event");
+        }
+    }
+
+    @DeleteMapping("/attendance/{seID}")
+    public ResponseEntity<?> deleteAttendance(@PathVariable Integer seID) {
+        try {
+            eventService.deleteAttendance(seID);
+            return ResponseEntity.ok("Attendance deleted successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Failed to delete attendance");
         }
     }
 
@@ -109,6 +140,24 @@ public class EventController {
             return ResponseEntity.ok(eventService.getEvent(eID));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(null);
+        }
+    }
+
+    @GetMapping("/attendance/{eID}")
+    public ResponseEntity<?> getAttendance(@PathVariable Integer eID) {
+        try {
+            return ResponseEntity.ok(eventService.getAttendance(eID));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Failed to get attendance");
+        }
+    }
+
+    @GetMapping("/attendance/{uID}")
+    public ResponseEntity<?> getAttendanceByUser(@PathVariable Integer uID) {
+        try {
+            return ResponseEntity.ok(eventService.getAttendanceByUser(Long.valueOf(uID)));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Failed to get attendance");
         }
     }
 
