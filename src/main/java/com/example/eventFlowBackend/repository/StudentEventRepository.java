@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface StudentEventRepository extends JpaRepository<StudentEvent, Integer> {
-    List<StudentEvent> findAllByEvent_EID(Integer eID);
-    List<StudentEvent> findAllByUser_UID(Integer uID);
+    List<StudentEvent> findAllByEvent_eID(Integer eventEID);
+    List<StudentEvent> findAllByUser_uID(Integer userUID);
 }

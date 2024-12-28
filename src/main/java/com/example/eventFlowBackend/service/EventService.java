@@ -155,7 +155,7 @@ public class EventService {
     public List<EventAttendanceDTO> getAttendance(Integer eID) {
         try {
             List<EventAttendanceDTO> eventAttendanceDTOs = new ArrayList<>();
-            studentEventRepository.findAllByEvent_EID(eID).forEach(studentEvent -> {
+            studentEventRepository.findAllByEvent_eID(eID).forEach(studentEvent -> {
                 EventAttendanceDTO eventAttendanceDTO = new EventAttendanceDTO();
                 eventAttendanceDTO.setSeID(studentEvent.getId());
                 eventAttendanceDTO.setUID(studentEvent.getUser().getUID().intValue());
@@ -177,7 +177,7 @@ public class EventService {
     public List<EventAttendanceDTO> getAttendanceByUser(Long uID) {
         try {
             List<EventAttendanceDTO> eventAttendanceDTOs = new ArrayList<>();
-            studentEventRepository.findAllByUser_UID(Math.toIntExact(uID)).forEach(studentEvent -> {
+            studentEventRepository.findAllByUser_uID(Math.toIntExact(uID)).forEach(studentEvent -> {
                 EventAttendanceDTO eventAttendanceDTO = new EventAttendanceDTO();
                 eventAttendanceDTO.setSeID(studentEvent.getId());
                 eventAttendanceDTO.setUID(studentEvent.getUser().getUID().intValue());

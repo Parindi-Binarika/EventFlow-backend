@@ -143,7 +143,7 @@ public class EventController {
         }
     }
 
-    @GetMapping("/attendance/{eID}")
+    @GetMapping("/attendance/event/{eID}")
     public ResponseEntity<?> getAttendance(@PathVariable Integer eID) {
         try {
             return ResponseEntity.ok(eventService.getAttendance(eID));
@@ -152,7 +152,7 @@ public class EventController {
         }
     }
 
-    @GetMapping("/attendance/{uID}")
+    @GetMapping("/attendance/user/{uID}")
     public ResponseEntity<?> getAttendanceByUser(@PathVariable Integer uID) {
         try {
             return ResponseEntity.ok(eventService.getAttendanceByUser(Long.valueOf(uID)));
