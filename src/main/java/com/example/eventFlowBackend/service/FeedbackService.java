@@ -37,7 +37,7 @@ public class FeedbackService {
             studentEventFeedback.setStudentEvent(studentEventRepository.findById(seID).get());
             studentEventFeedbackRepository.save(studentEventFeedback);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to create feedback");
+            throw new RuntimeException("Failed to create feedback: " + e.getMessage());
         }
     }
 
@@ -95,7 +95,7 @@ public class FeedbackService {
     public List<FeedbackDTO> getAllFeedbackByeIDAnd_uID(Integer eID, Integer uID) {
         try {
             List<FeedbackDTO> feedbackDTOList = new ArrayList<>();
-            studentEventFeedbackRepository.findAllByStudentEvent_Event_eIDAndStudentEvent_User_uID(eID, Long.valueOf(uID)).forEach(studentEventFeedback -> {
+            studentEventFeedbackRepository.findAllByStudentEvent_Event_eIDAndStudentEvent_User_uID(eID,uID).forEach(studentEventFeedback -> {
                 FeedbackDTO feedbackDTO = new FeedbackDTO();
                 feedbackDTO.setFID(studentEventFeedback.getFeedback().getFID());
                 feedbackDTO.setFeedback(studentEventFeedback.getFeedback().getFeedback());

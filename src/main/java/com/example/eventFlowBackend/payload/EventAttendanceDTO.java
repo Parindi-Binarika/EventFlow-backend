@@ -12,6 +12,7 @@ public class EventAttendanceDTO {
     private String title;
     private String description;
     private Integer points;
+    private Integer individual_fID;
     private String StudentName;
     private String mobile;
     private LocalDateTime date;

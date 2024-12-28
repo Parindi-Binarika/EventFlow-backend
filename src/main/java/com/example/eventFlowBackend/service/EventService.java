@@ -2,13 +2,11 @@ package com.example.eventFlowBackend.service;
 
 import com.example.eventFlowBackend.entity.Event;
 import com.example.eventFlowBackend.entity.EventType;
+import com.example.eventFlowBackend.entity.FeedbackType;
 import com.example.eventFlowBackend.entity.StudentEvent;
 import com.example.eventFlowBackend.payload.EventAttendanceDTO;
 import com.example.eventFlowBackend.payload.EventDTO;
-import com.example.eventFlowBackend.repository.AnnouncementRepository;
-import com.example.eventFlowBackend.repository.EventRepository;
-import com.example.eventFlowBackend.repository.StudentEventRepository;
-import com.example.eventFlowBackend.repository.UserRepository;
+import com.example.eventFlowBackend.repository.*;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,14 +18,16 @@ public class EventService {
     EventRepository eventRepository;
     UserRepository userRepository;
     AnnouncementRepository announcementRepository;
+    StudentEventFeedbackRepository studentEventFeedbackRepository;
 
     StudentEventRepository studentEventRepository;
 
-    public EventService(EventRepository eventRepository, UserRepository userRepository, AnnouncementRepository announcementRepository, StudentEventRepository studentEventRepository) {
+    public EventService(EventRepository eventRepository, UserRepository userRepository, AnnouncementRepository announcementRepository, StudentEventRepository studentEventRepository, StudentEventFeedbackRepository studentEventFeedbackRepository) {
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
         this.announcementRepository = announcementRepository;
         this.studentEventRepository = studentEventRepository;
+        this.studentEventFeedbackRepository = studentEventFeedbackRepository;
     }
 
     public void create(EventDTO eventDTO, EventType eventType) {
@@ -101,6 +101,7 @@ public class EventService {
 
     public List<EventDTO> getEvents(EventType eventType) {
         try {
+            System.out.println(eventType);
             List<EventDTO> eventDTOs = new ArrayList<>();
             eventRepository.findAllByEventTypeAndIsActiveTrue(eventType).forEach(event -> {
                 EventDTO eventDTO = new EventDTO();
@@ -114,10 +115,14 @@ public class EventService {
                 if (event.getAnnouncement() != null) {
                     eventDTO.setAID(event.getAnnouncement().getAID());
                 }
+                if (studentEventRepository.findTopByEvent_eID(event.getEID()) != null) {
+                    eventDTO.setGroup_fID(studentEventFeedbackRepository.findByStudentEvent_IdAndFeedback_FeedbackType(studentEventRepository.findTopByEvent_eID(event.getEID()).getId(),FeedbackType.group).getFeedback().getFID());
+                }
                 eventDTOs.add(eventDTO);
             });
             return eventDTOs;
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             throw new RuntimeException("Failed to get events");
         }
     }
@@ -165,6 +170,9 @@ public class EventService {
                 eventAttendanceDTO.setStudentName(studentEvent.getUser().getName());
                 eventAttendanceDTO.setMobile(studentEvent.getUser().getMobile());
                 eventAttendanceDTO.setDate(studentEvent.getDate());
+                if (studentEventFeedbackRepository.findByStudentEvent_IdAndFeedback_FeedbackType(studentEvent.getId(),FeedbackType.individual) != null){
+                    eventAttendanceDTO.setIndividual_fID(studentEventFeedbackRepository.findByStudentEvent_IdAndFeedback_FeedbackType(studentEvent.getId(),FeedbackType.individual).getFeedback().getFID());
+                }
                 eventAttendanceDTOs.add(eventAttendanceDTO);
             });
             return eventAttendanceDTOs;
@@ -187,6 +195,9 @@ public class EventService {
                 eventAttendanceDTO.setStudentName(studentEvent.getUser().getName());
                 eventAttendanceDTO.setMobile(studentEvent.getUser().getMobile());
                 eventAttendanceDTO.setDate(studentEvent.getDate());
+                if (studentEventFeedbackRepository.findByStudentEvent_IdAndFeedback_FeedbackType(studentEvent.getId(),FeedbackType.individual) != null){
+                    eventAttendanceDTO.setIndividual_fID(studentEventFeedbackRepository.findByStudentEvent_IdAndFeedback_FeedbackType(studentEvent.getId(),FeedbackType.individual).getFeedback().getFID());
+                }
                 eventAttendanceDTOs.add(eventAttendanceDTO);
             });
             return eventAttendanceDTOs;

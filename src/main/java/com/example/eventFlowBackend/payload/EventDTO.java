@@ -13,6 +13,7 @@ public class EventDTO {
     private LocalDateTime startDateTime;
     private EventType eventType;
     private Boolean isActive;
+    private Integer group_fID;
     private Integer createdBy;
     private Integer aID;
 }

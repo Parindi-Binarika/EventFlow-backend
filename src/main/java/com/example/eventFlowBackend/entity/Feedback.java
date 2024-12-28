@@ -17,7 +17,6 @@ public class Feedback {
     @Column(nullable = false)
     private FeedbackType feedbackType;
 
-    @Column(nullable = false)
     private LocalDateTime createdDateTime;
 
     @PrePersist
