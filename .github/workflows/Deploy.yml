@@ -1,0 +1,77 @@
+name: Backend CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # Debug Maven Wrapper Permissions
+      - name: Debug Maven Wrapper Permissions
+        run: ls -l mvnw
+
+      # Make Maven Wrapper Executable
+      - name: Make Maven Wrapper Executable
+        run: chmod +x mvnw
+
+      # Set up Java environment
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      # Build the Spring Boot application
+      - name: Build Backend
+        run: ./mvnw clean package -DskipTests
+
+      # Save Private Key to File
+      - name: Save Private Key
+        run: |
+          echo "${{ secrets.AWS_PRIVATE_KEY }}" > private_key.pem
+          chmod 600 private_key.pem
+          
+          # Add EC2 Host to Known Hosts
+      - name: Add EC2 Host to Known Hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ec2-13-49-75-219.eu-north-1.compute.amazonaws.com >> ~/.ssh/known_hosts
+      
+
+      # # Test EC2 Host Connectivity
+      # - name: Test Connectivity
+      #   run: ping -c 4 ${{ secrets.HOST }}
+
+      # # Add EC2 Host to Known Hosts
+      # - name: Add EC2 Host to Known Hosts
+      #   run: |
+      #     mkdir -p ~/.ssh
+      #     ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
+
+      # Debug SSH Connection
+      - name: Debug SSH Connection
+        env:
+          HOST: ${{ secrets.HOST }}
+          USER: ${{ secrets.USER }}
+        run: ssh -i private_key.pem $USER@$HOST echo "SSH connection successful"
+
+
+      # Deploy to AWS EC2
+      - name: Deploy to AWS EC2
+        env:
+          HOST: ${{ secrets.HOST }}
+          USER: ${{ secrets.USER }}
+        run: |
+          scp -o StrictHostKeyChecking=no -i private_key.pem target/*.jar $USER@$HOST:/home/$USER/eventFlowBackend.jar
+          ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST << EOF
+            pkill -f eventFlowBackend.jar || true
+            nohup java -jar /home/$USER/eventFlowBackend.jar > /home/$USER/eventFlowBackend.log 2>&1 &
+          EOF
