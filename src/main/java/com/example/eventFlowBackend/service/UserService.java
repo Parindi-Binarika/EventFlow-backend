@@ -86,19 +86,6 @@ public class UserService {
             return users;
     }
 
-    public List<BatchDTO> findBatchesByUser(Long uID) {
-        List<BatchDTO> batches = new ArrayList<>();
-        studentBatchRepository.findByUser_uID(uID).forEach(studentBatch -> {
-            BatchDTO batchDTO = new BatchDTO();
-            batchDTO.setBID(studentBatch.getBatch().getBID());
-            batchDTO.setBatchName(studentBatch.getBatch().getBatchName());
-            batchDTO.setCommonEmail(studentBatch.getBatch().getCommonEmail());
-            batches.add(batchDTO);
-        });
-
-        return batches;
-    }
-
     public UserDTO findByID(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
         UserDTO userDTO = new UserDTO();

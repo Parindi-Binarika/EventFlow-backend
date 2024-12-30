@@ -112,16 +112,6 @@ public class UserController {
         }
     }
 
-    @GetMapping("/batch/{uID}")
-    public ResponseEntity<?> getAllBatchesByUID(@PathVariable Long uID) {
-        try {
-            return ResponseEntity.ok(userService.findBatchesByUser(uID));
-        } catch (RuntimeException e) {
-            System.out.println(e.getMessage());
-            return ResponseEntity.status(400).body("Batches not found");
-        }
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
         try {

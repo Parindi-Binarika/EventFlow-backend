@@ -3,6 +3,7 @@ package com.example.eventFlowBackend.service;
 import com.example.eventFlowBackend.entity.Batch;
 import com.example.eventFlowBackend.entity.StudentBatch;
 import com.example.eventFlowBackend.entity.User;
+import com.example.eventFlowBackend.payload.BatchDTO;
 import com.example.eventFlowBackend.payload.UserDTO;
 import com.example.eventFlowBackend.repository.BatchRepository;
 import com.example.eventFlowBackend.repository.StudentBatchRepository;
@@ -84,5 +85,23 @@ public class BatchService {
 
     public Batch findById(Long id) {
         return batchRepository.findById(id).orElseThrow(() -> new RuntimeException("Batch not found"));
+    }
+
+    public List<BatchDTO> findBatchesByUser(Long uID) {
+        try {
+            List<BatchDTO> batches = new ArrayList<>();
+            studentBatchRepository.findByUser_uID(uID).forEach(studentBatch -> {
+                Batch batch = studentBatch.getBatch();
+                BatchDTO batchDTO = new BatchDTO();
+                batchDTO.setBID(batch.getBID());
+                batchDTO.setBatchName(batch.getBatchName());
+                batchDTO.setCommonEmail(batch.getCommonEmail());
+                batches.add(batchDTO);
+            });
+            return batches;
+        } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
+            throw new RuntimeException("Error finding batches by user");
+        }
     }
 }
