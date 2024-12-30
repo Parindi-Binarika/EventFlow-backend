@@ -25,8 +25,12 @@ public class UserService {
         this.studentBatchRepository = studentBatchRepository;
     }
 
-    public User create(UserDTO request) {
+    public User create(Role role,UserDTO request) {
         try {
+            User valUser = userRepository.findByEmail(request.getEmail());
+            if (valUser != null) {
+                throw new RuntimeException("User already exists");
+            }
             User user = new User();
             user.setName(request.getName());
             user.setEmail(request.getEmail());
@@ -34,7 +38,7 @@ public class UserService {
             user.setNic(request.getNic());
             user.setCreatedBy(userRepository.findById(Long.valueOf(request.getCreatedBy())).orElseThrow(() -> new RuntimeException("User not found")));
             user.setPassword(passwordEncoder.encode(request.getPassword()));
-            user.setRole(Role.valueOf(request.getRole().name()));
+            user.setRole(Role.valueOf(role.name()));
             return userRepository.save(user);
         } catch (Exception e) {
             throw new RuntimeException("User not created");
@@ -95,8 +99,33 @@ public class UserService {
         return batches;
     }
 
-    public Optional<User> findByID(Long id) {
-        return userRepository.findById(id);
+    public UserDTO findByID(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        UserDTO userDTO = new UserDTO();
+        userDTO.setUID(user.getUID());
+        userDTO.setName(user.getName());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setMobile(user.getMobile());
+        userDTO.setNic(user.getNic());
+        userDTO.setRole(user.getRole());
+        userDTO.setCreatedBy(user.getCreatedBy().getUID());
+        return userDTO;
+    }
+
+    public List<UserDTO> findByRole(Role role) {
+        List<UserDTO> users = new ArrayList<>();
+        userRepository.findByRoleAndIsActiveTrue(role).forEach(user -> {
+            UserDTO userDTO = new UserDTO();
+            userDTO.setUID(user.getUID());
+            userDTO.setName(user.getName());
+            userDTO.setEmail(user.getEmail());
+            userDTO.setMobile(user.getMobile());
+            userDTO.setNic(user.getNic());
+            userDTO.setRole(user.getRole());
+            userDTO.setCreatedBy(user.getCreatedBy().getUID());
+            users.add(userDTO);
+        });
+        return users;
     }
 
     public List<UserDTO> findByNicStartingWith(String nic) {

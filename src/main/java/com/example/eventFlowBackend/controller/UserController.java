@@ -1,5 +1,6 @@
 package com.example.eventFlowBackend.controller;
 
+import com.example.eventFlowBackend.entity.Role;
 import com.example.eventFlowBackend.entity.User;
 import com.example.eventFlowBackend.payload.BatchDTO;
 import com.example.eventFlowBackend.payload.UserDTO;
@@ -19,17 +20,33 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping()
+    @PostMapping("/create/admin")
     public ResponseEntity<?> create(@RequestBody UserDTO request) {
         try {
-            Optional<User> user = userService.findByEmail(request.getEmail());
-            if (user.isPresent()) {
-                return ResponseEntity.status(403).build();
-            }
-            userService.create(request);
+            userService.create(Role.admin,request);
             return ResponseEntity.status(200).body("User created successfully");
         } catch (RuntimeException e) {
-            return ResponseEntity.status(400).build();
+            return ResponseEntity.status(400).body("User not created");
+        }
+    }
+
+    @PostMapping("/create/student")
+    public ResponseEntity<?> createStudent(@RequestBody UserDTO request) {
+        try {
+            userService.create(Role.student,request);
+            return ResponseEntity.status(200).body("User created successfully");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(400).body("User not created");
+        }
+    }
+
+    @PostMapping("/create/lecturer")
+    public ResponseEntity<?> createTeacher(@RequestBody UserDTO request) {
+        try {
+            userService.create(Role.lecturer,request);
+            return ResponseEntity.status(200).body("User created successfully");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(400).body("User not created");
         }
     }
 
@@ -39,7 +56,7 @@ public class UserController {
             userService.update(id, updatedUser);
             return ResponseEntity.status(200).body("User updated successfully");
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(400).body("User not updated");
         }
     }
 
@@ -49,7 +66,7 @@ public class UserController {
             userService.updatePassword(id, request);
             return ResponseEntity.status(200).body("Password updated successfully");
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(400).body("Password not updated");
         }
     }
 
@@ -59,7 +76,7 @@ public class UserController {
             userService.delete(id);
             return ResponseEntity.status(200).body("User deleted successfully");
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(400).body("User not deleted");
         }
     }
 
@@ -68,31 +85,58 @@ public class UserController {
         return ResponseEntity.ok(userService.findByIsActiveTrue());
     }
 
+    @GetMapping("/students")
+    public ResponseEntity<?> getAllStudents() {
+        try {
+            return ResponseEntity.ok(userService.findByRole(Role.student));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(400).body("Students not found");
+        }
+    }
+
+    @GetMapping("/lecturers")
+    public ResponseEntity<?> getAllLecturers() {
+        try {
+            return ResponseEntity.ok(userService.findByRole(Role.lecturer));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(400).body("Lecturers not found");
+        }
+    }
+
+    @GetMapping("/admins")
+    public ResponseEntity<?> getAllAdmins() {
+        try {
+            return ResponseEntity.ok(userService.findByRole(Role.admin));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(400).body("Admins not found");
+        }
+    }
+
     @GetMapping("/batch/{uID}")
-    public ResponseEntity<List<BatchDTO>> getAllBatchesByUID(@PathVariable Long uID) {
+    public ResponseEntity<?> getAllBatchesByUID(@PathVariable Long uID) {
         try {
             return ResponseEntity.ok(userService.findBatchesByUser(uID));
         } catch (RuntimeException e) {
             System.out.println(e.getMessage());
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(400).body("Batches not found");
         }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<User>> getUserById(@PathVariable Long id) {
+    public ResponseEntity<?> getUserById(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(userService.findByID(id));
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(400).body("User not found");
         }
     }
 
     @GetMapping("/search/{nic}")
-    public ResponseEntity<List<UserDTO>> searchByNic(@PathVariable String nic) {
+    public ResponseEntity<?> searchByNic(@PathVariable String nic) {
         try {
             return ResponseEntity.ok(userService.findByNicStartingWith(nic));
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(400).body("User not found");
         }
     }
 
