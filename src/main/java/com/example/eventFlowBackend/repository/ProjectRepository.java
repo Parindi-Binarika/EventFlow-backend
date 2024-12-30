@@ -1,0 +1,10 @@
+package com.example.eventFlowBackend.repository;
+
+import com.example.eventFlowBackend.entity.Project;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface ProjectRepository extends JpaRepository<Project, Integer> {
+    List<Project> findByPortfolio_pID(Integer portfolioPID);
+}
