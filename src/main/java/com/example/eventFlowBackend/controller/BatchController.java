@@ -1,6 +1,7 @@
 package com.example.eventFlowBackend.controller;
 
 import com.example.eventFlowBackend.entity.Batch;
+import com.example.eventFlowBackend.payload.BatchDTO;
 import com.example.eventFlowBackend.service.BatchService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,53 +16,53 @@ public class BatchController {
     }
 
     @PostMapping
-    public ResponseEntity<Batch> create(@RequestBody Batch batch) {
+    public ResponseEntity<?> create(@RequestBody BatchDTO batch) {
         try {
-            Batch resBatch = batchService.create(batch);
-            return ResponseEntity.status(200).build();
+            batchService.create(batch);
+            return ResponseEntity.status(200).body("Batch created successfully");
         } catch (RuntimeException e) {
-            return ResponseEntity.status(400).build();
+            return ResponseEntity.status(400).body("Batch creation failed");
         }
     }
 
     @PostMapping("/assign/{bID}/{uID}")
-    public ResponseEntity<Batch> assignUser(@PathVariable Long bID, @PathVariable Long uID) {
+    public ResponseEntity<?> assignUser(@PathVariable Long bID, @PathVariable Long uID) {
         try {
             batchService.assignUser(bID, uID);
-            return ResponseEntity.status(200).build();
+            return ResponseEntity.status(200).body("User assigned to batch successfully");
         } catch (RuntimeException e) {
             System.out.println(e.getMessage());
-            return ResponseEntity.status(400).build();
+            return ResponseEntity.status(400).body("User assignment failed");
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Batch> update(@PathVariable Long id, @RequestBody Batch updatedBatch) {
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody BatchDTO updatedBatch) {
         try {
             batchService.update(id, updatedBatch);
-            return ResponseEntity.status(200).build();
+            return ResponseEntity.status(200).body("Batch updated successfully");
         } catch (RuntimeException e) {
-            return ResponseEntity.status(404).build();
+            return ResponseEntity.status(404).body("Batch not found");
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         try {
             batchService.delete(id);
-            return ResponseEntity.status(200).build();
+            return ResponseEntity.status(200).body("Batch deleted successfully");
         } catch (RuntimeException e) {
-            return ResponseEntity.status(404).build();
+            return ResponseEntity.status(404).body("Batch not found");
         }
     }
 
     @DeleteMapping("/assign/{id}")
-    public ResponseEntity<Void> unassignUser(@PathVariable Long id) {
+    public ResponseEntity<?> unassignUser(@PathVariable Long id) {
         try {
             batchService.unassignUser(id);
-            return ResponseEntity.status(200).build();
+            return ResponseEntity.status(200).body("User unassigned from batch successfully");
         } catch (RuntimeException e) {
-            return ResponseEntity.status(404).build();
+            return ResponseEntity.status(404).body("User not found");
         }
     }
 
@@ -71,11 +72,11 @@ public class BatchController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Batch> getBatchById(@PathVariable Long id) {
+    public ResponseEntity<?> getBatchById(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(batchService.findById(id));
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(404).body("Batch not found");
         }
     }
 
@@ -84,7 +85,7 @@ public class BatchController {
         try {
             return ResponseEntity.ok(batchService.findUsersByBatch(bID));
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(404).body("Batch not found");
         }
     }
 
@@ -93,7 +94,7 @@ public class BatchController {
         try {
             return ResponseEntity.ok(batchService.findBatchesByUser(uID));
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(404).body("User not found");
         }
     }
 

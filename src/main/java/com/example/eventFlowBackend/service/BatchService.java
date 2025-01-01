@@ -25,8 +25,16 @@ public class BatchService {
         this.userRepository = userRepository;
     }
 
-    public Batch create(Batch batch) {
-        return batchRepository.save(batch);
+    public void create(BatchDTO batch) {
+        try {
+            Batch newBatch = new Batch();
+            newBatch.setBatchName(batch.getBatchName());
+            newBatch.setCommonEmail(batch.getCommonEmail());
+            batchRepository.save(newBatch);
+        } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
+            throw new RuntimeException("Error creating batch");
+        }
     }
 
     public void assignUser(Long bID, Long uID) {
@@ -41,12 +49,17 @@ public class BatchService {
         }
     }
 
-    public Batch update(Long id, Batch updatedBatch) {
-        return batchRepository.findById(id).map(batch -> {
-            batch.setBatchName(updatedBatch.getBatchName());
-            batch.setCommonEmail(updatedBatch.getCommonEmail());
-            return batchRepository.save(batch);
-        }).orElseThrow(() -> new RuntimeException("Batch not found"));
+    public void update(Long id, BatchDTO updatedBatch) {
+        try {
+            batchRepository.findById(id).map(batch -> {
+                batch.setBatchName(updatedBatch.getBatchName());
+                batch.setCommonEmail(updatedBatch.getCommonEmail());
+                return batchRepository.save(batch);
+            }).orElseThrow(() -> new RuntimeException("Batch not found"));
+        } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
+            throw new RuntimeException("Error updating batch");
+        }
     }
 
     public void delete(Long id) {
@@ -65,8 +78,21 @@ public class BatchService {
         }
     }
 
-    public List<Batch> findAll() {
-        return batchRepository.findByIsActiveTrue();
+    public List<BatchDTO> findAll() {
+        try {
+            List<BatchDTO> batches = new ArrayList<>();
+            batchRepository.findAll().forEach(batch -> {
+                BatchDTO batchDTO = new BatchDTO();
+                batchDTO.setBID(batch.getBID());
+                batchDTO.setBatchName(batch.getBatchName());
+                batchDTO.setCommonEmail(batch.getCommonEmail());
+                batches.add(batchDTO);
+            });
+            return batches;
+        } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
+            throw new RuntimeException("Error finding all batches");
+        }
     }
 
     public List<UserDTO> findUsersByBatch(Long bID) {
