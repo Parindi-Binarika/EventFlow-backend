@@ -8,5 +8,7 @@ import java.util.Optional;
 
 public interface StudentBatchRepository extends JpaRepository<StudentBatch, Long> {
     List<StudentBatch> findByUser_uID(Long userId);
-    List<StudentBatch> findByBatch_bID(Long batchId);
+
+    List<StudentBatch> findByBatch_bIDAndUser_IsActive(Long batchBID, Boolean userIsActive);
+    Optional<StudentBatch> findByUser_uIDAndBatch_bID(Long userId, Long batchId);
 }

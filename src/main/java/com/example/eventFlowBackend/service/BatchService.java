@@ -1,6 +1,7 @@
 package com.example.eventFlowBackend.service;
 
 import com.example.eventFlowBackend.entity.Batch;
+import com.example.eventFlowBackend.entity.Role;
 import com.example.eventFlowBackend.entity.StudentBatch;
 import com.example.eventFlowBackend.entity.User;
 import com.example.eventFlowBackend.payload.BatchDTO;
@@ -42,10 +43,16 @@ public class BatchService {
             StudentBatch studentBatch = new StudentBatch();
             studentBatch.setBatch(batchRepository.findById(bID).orElseThrow(() -> new RuntimeException("Batch not found")));
             studentBatch.setUser(userRepository.findById(uID).orElseThrow(() -> new RuntimeException("User not found")));
+            if (studentBatch.getUser().getRole() != Role.student) {
+                throw new RuntimeException("User is not a student");
+            }
+            if (studentBatchRepository.findByUser_uIDAndBatch_bID(uID, bID).isPresent()) {
+                throw new RuntimeException("User is already assigned to batch");
+            }
             studentBatchRepository.save(studentBatch);
         } catch (RuntimeException e) {
             System.out.println(e.getMessage());
-            throw new RuntimeException("Error assigning user to batch");
+            throw new RuntimeException("Error assigning user to batch: " + e.getMessage());
         }
     }
 
@@ -81,7 +88,7 @@ public class BatchService {
     public List<BatchDTO> findAll() {
         try {
             List<BatchDTO> batches = new ArrayList<>();
-            batchRepository.findAll().forEach(batch -> {
+            batchRepository.findByIsActiveTrue().forEach(batch -> {
                 BatchDTO batchDTO = new BatchDTO();
                 batchDTO.setBID(batch.getBID());
                 batchDTO.setBatchName(batch.getBatchName());
@@ -97,7 +104,7 @@ public class BatchService {
 
     public List<UserDTO> findUsersByBatch(Long bID) {
         List<UserDTO> students = new ArrayList<>();
-        studentBatchRepository.findByBatch_bID(bID).forEach(studentBatch -> {
+        studentBatchRepository.findByBatch_bIDAndUser_IsActive(bID,Boolean.TRUE).forEach(studentBatch -> {
             User user = studentBatch.getUser();
             UserDTO userDTO = new UserDTO();
             userDTO.setUID(user.getUID());
