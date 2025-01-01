@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,13 +30,17 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
-        );
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        User user = userService.findByEmail(request.getEmail()).orElseThrow(() -> new RuntimeException("User not found"));
-        String token = jwtUtil.generateToken(request.getEmail(), user.getRole());
-        return ResponseEntity.ok(new AuthResponse(token, user.getUID()));
+    public ResponseEntity<?> login(@RequestBody AuthRequest request) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+            );
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            User user = userService.findByEmail(request.getEmail()).orElseThrow(() -> new RuntimeException("User not found"));
+            String token = jwtUtil.generateToken(request.getEmail(), user.getRole());
+            return ResponseEntity.ok(new AuthResponse(token, user.getUID()));
+        } catch (AuthenticationException e) {
+            return ResponseEntity.status(401).body("Invalid email/password");
+        }
     }
 }
