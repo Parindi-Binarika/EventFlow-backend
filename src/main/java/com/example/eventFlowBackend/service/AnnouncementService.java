@@ -128,10 +128,13 @@ public class AnnouncementService {
     public void sendAnnouncement(Integer aID) {
         try {
             Announcement announcement = announcementRepository.findById(aID).orElseThrow( () -> new RuntimeException("Announcement not found"));
+            if (announcement.getIsSent()) {
+                throw new RuntimeException("Announcement already sent");
+            }
             announcement.setIsSent(true);
             announcementRepository.save(announcement);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to send announcement");
+            throw new RuntimeException("Failed to send announcement: " + e.getMessage());
         }
     }
 
@@ -153,7 +156,7 @@ public class AnnouncementService {
     public List<AnnouncementDTO> getAllSendAnnouncements(Integer userId) {
         List<AnnouncementDTO> announcementDTOS = new ArrayList<>();
         try {
-            announcementRepository.findByCreatedBy_uIDAndIsSentFalse(userId).forEach(announcement -> {
+            announcementRepository.findByCreatedBy_uIDAndIsSent(userId,Boolean.TRUE).forEach(announcement -> {
                 AnnouncementDTO announcementDTO = new AnnouncementDTO();
                 announcementDTO.setAID(announcement.getAID());
                 announcementDTO.setSubject(announcement.getSubject());
@@ -171,7 +174,7 @@ public class AnnouncementService {
     public List<AnnouncementDTO> getAllDraftAnnouncements(Integer userId) {
         List<AnnouncementDTO> announcementDTOS = new ArrayList<>();
         try {
-            announcementRepository.findByCreatedBy_uIDAndIsSentFalse(userId).forEach(announcement -> {
+            announcementRepository.findByCreatedBy_uIDAndIsSent(userId,Boolean.FALSE).forEach(announcement -> {
                 AnnouncementDTO announcementDTO = new AnnouncementDTO();
                 announcementDTO.setAID(announcement.getAID());
                 announcementDTO.setSubject(announcement.getSubject());
