@@ -36,7 +36,7 @@ public class AnnouncementController {
             announcementService.assignBatch(aID, bID);
             return ResponseEntity.status(200).body("Batch assigned successfully");
         } catch (RuntimeException e) {
-            return ResponseEntity.status(400).body("Failed to assign batch");
+            return ResponseEntity.status(400).body("Failed to assign batch: " + e.getMessage());
         }
     }
 
@@ -46,7 +46,7 @@ public class AnnouncementController {
             announcementService.assignStudent(aID, uID);
             return ResponseEntity.status(200).body("Student assigned successfully");
         } catch (RuntimeException e) {
-            return ResponseEntity.status(400).body("Failed to assign student");
+            return ResponseEntity.status(400).body("Failed to assign student: " + e.getMessage());
         }
     }
 
@@ -56,7 +56,7 @@ public class AnnouncementController {
             announcementService.sendAnnouncement(aid);
             return ResponseEntity.status(200).body("Announcement sent successfully");
         } catch (RuntimeException e) {
-            return ResponseEntity.status(404).body("Announcement not found");
+            return ResponseEntity.status(400).body("Failed to send announcement: " + e.getMessage());
         }
     }
 
@@ -86,7 +86,7 @@ public class AnnouncementController {
             announcementService.unassignBatch(id);
             return ResponseEntity.status(200).body("Batch unassigned successfully");
         } catch (RuntimeException e) {
-            return ResponseEntity.status(404).body("Batch not found: " + e.getMessage());
+            return ResponseEntity.status(400).body("Batch not found: " + e.getMessage());
         }
     }
 
@@ -96,7 +96,7 @@ public class AnnouncementController {
             announcementService.unassignStudent(id);
             return ResponseEntity.status(200).body("Student unassigned successfully");
         } catch (RuntimeException e) {
-            return ResponseEntity.status(404).body("Student not found: " + e.getMessage());
+            return ResponseEntity.status(400).body("Student not found: " + e.getMessage());
         }
     }
 
