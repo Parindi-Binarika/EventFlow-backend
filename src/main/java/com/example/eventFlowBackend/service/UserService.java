@@ -46,7 +46,7 @@ public class UserService {
 
     }
 
-    public void update(Long id, User updatedUser) {
+    public void update(Long id, UserDTO updatedUser) {
         userRepository.findById(id).map(user -> {
             user.setName(updatedUser.getName());
             user.setEmail(updatedUser.getEmail());
@@ -56,7 +56,7 @@ public class UserService {
         }).orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-    public void updatePassword(Long id, User request) {
+    public void updatePassword(Long id, UserDTO request) {
         userRepository.findById(id).map(user -> {
             user.setPassword(passwordEncoder.encode(request.getPassword()));
             return userRepository.save(user);

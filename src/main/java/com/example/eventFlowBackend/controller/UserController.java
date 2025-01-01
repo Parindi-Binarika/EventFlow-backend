@@ -51,7 +51,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody UserDTO updatedUser) {
         try {
             userService.update(id, updatedUser);
             return ResponseEntity.status(200).body("User updated successfully");
@@ -61,7 +61,7 @@ public class UserController {
     }
 
     @PutMapping("/password/{id}")
-    public ResponseEntity<?> updatePassword(@PathVariable Long id, @RequestBody User request) {
+    public ResponseEntity<?> updatePassword(@PathVariable Long id, @RequestBody UserDTO request) {
         try {
             userService.updatePassword(id, request);
             return ResponseEntity.status(200).body("Password updated successfully");
