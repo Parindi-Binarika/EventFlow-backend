@@ -43,6 +43,9 @@ public class AnnouncementService {
 
     public void assignBatch(Integer aID, Integer bID) {
         try {
+            if (announcementBatchRepository.findByBatch_bIDAndAnnouncement_aID(bID, aID).isPresent()) {
+                throw new RuntimeException("Batch already assigned");
+            }
             Announcement announcement = announcementRepository.findById(aID).orElseThrow(() -> new RuntimeException("Announcement not found"));
             Batch batch = batchRepository.findById(Long.valueOf(bID)).orElseThrow(() -> new RuntimeException("Batch not found"));
             AnnouncementBatch announcementBatch = new AnnouncementBatch();
@@ -50,12 +53,15 @@ public class AnnouncementService {
             announcementBatch.setBatch(batch);
             announcementBatchRepository.save(announcementBatch);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to assign batch");
+            throw new RuntimeException("Failed to assign batch: " + e.getMessage());
         }
     }
 
     public void assignStudent(Integer aID, Integer uID) {
         try {
+            if (announcementStudentRepository.findByUser_uIDAndAnnouncement_aID(uID, aID).isPresent()) {
+                throw new RuntimeException("Student already assigned");
+            }
             Announcement announcement = announcementRepository.findById(aID).orElseThrow(() -> new RuntimeException("Announcement not found"));
             User user = userRepository.findById(Long.valueOf(uID)).orElseThrow( () -> new RuntimeException("User not found"));
             AnnouncementStudent announcementStudent = new AnnouncementStudent();
@@ -63,18 +69,21 @@ public class AnnouncementService {
             announcementStudent.setUser(user);
             announcementStudentRepository.save(announcementStudent);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to assign batch");
+            throw new RuntimeException("Failed to assign batch: " + e.getMessage());
         }
     }
 
     public void updateAnnouncement(Integer id,AnnouncementDTO announcementDTO) {
         try {
             Announcement announcement = announcementRepository.findById(id).get();
+            if (announcement.getIsSent()) {
+                throw new RuntimeException("Cannot update sent announcement");
+            }
             announcement.setSubject(announcementDTO.getSubject());
             announcement.setMessage(announcementDTO.getMessage());
             announcementRepository.save(announcement);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to update announcement");
+            throw new RuntimeException("Failed to update announcement: " + e.getMessage());
         }
     }
 
@@ -88,25 +97,31 @@ public class AnnouncementService {
             announcementStudentRepository.deleteByAnnouncement_aID(id);
             announcementRepository.delete(announcement);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to delete announcement");
+            throw new RuntimeException("Failed to delete announcement:" + e.getMessage());
         }
     }
 
     public void unassignBatch(Integer id) {
         try {
             AnnouncementBatch announcementBatch = announcementBatchRepository.findById(id).orElseThrow(() -> new RuntimeException("AnnouncementBatch not found"));
+            if (announcementBatch.getAnnouncement().getIsSent()) {
+                throw new RuntimeException("Cannot unassign batch from sent announcement");
+            }
             announcementBatchRepository.delete(announcementBatch);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to unassign batch");
+            throw new RuntimeException("Failed to unassign batch: " + e.getMessage());
         }
     }
 
     public void unassignStudent(Integer id) {
         try {
             AnnouncementStudent announcementStudent = announcementStudentRepository.findById(id).orElseThrow(() -> new RuntimeException("AnnouncementStudent not found"));
+            if (announcementStudent.getAnnouncement().getIsSent()) {
+                throw new RuntimeException("Cannot unassign student from sent announcement");
+            }
             announcementStudentRepository.delete(announcementStudent);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to unassign student");
+            throw new RuntimeException("Failed to unassign student: " + e.getMessage());
         }
     }
 
@@ -127,6 +142,7 @@ public class AnnouncementService {
             announcementDTO.setSubject(announcement.getSubject());
             announcementDTO.setMessage(announcement.getMessage());
             announcementDTO.setCreatedBy(Long.valueOf(announcement.getCreatedBy().getUID()));
+            announcementDTO.setAID(announcement.getAID());
             announcementDTO.setSent(announcement.getIsSent());
             return announcementDTO;
         } catch (Exception e) {
