@@ -197,6 +197,7 @@ public class AnnouncementService {
                 assignedBatchResponse.setId(announcementBatch.getId());
                 assignedBatchResponse.setBatchName(announcementBatch.getBatch().getBatchName());
                 assignedBatchResponse.setCommonEmail(announcementBatch.getBatch().getCommonEmail());
+                assignedBatchResponse.setBID(announcementBatch.getBatch().getBID());
                 assignedBatchResponses.add(assignedBatchResponse);
             });
             return assignedBatchResponses;
@@ -213,6 +214,7 @@ public class AnnouncementService {
                 assignedStudentResponse.setId(announcementStudent.getId());
                 assignedStudentResponse.setName(announcementStudent.getUser().getName());
                 assignedStudentResponse.setEmail(announcementStudent.getUser().getEmail());
+                assignedStudentResponse.setUID(announcementStudent.getUser().getUID());
                 assignedStudentResponses.add(assignedStudentResponse);
             });
             return assignedStudentResponses;
