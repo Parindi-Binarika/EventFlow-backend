@@ -32,7 +32,7 @@ public class BatchController {
             return ResponseEntity.status(200).body("User assigned to batch successfully");
         } catch (RuntimeException e) {
             System.out.println(e.getMessage());
-            return ResponseEntity.status(400).body("User assignment failed");
+            return ResponseEntity.status(400).body("User assignment failed: " + e.getMessage());
         }
     }
 
