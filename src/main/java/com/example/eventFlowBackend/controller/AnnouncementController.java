@@ -66,7 +66,7 @@ public class AnnouncementController {
             announcementService.updateAnnouncement(id, updatedAnnouncement);
             return ResponseEntity.status(200).body("Announcement updated successfully");
         } catch (RuntimeException e) {
-            return ResponseEntity.status(404).body("Announcement not found");
+            return ResponseEntity.status(404).body("Announcement not found: " + e.getMessage());
         }
     }
 
@@ -76,7 +76,7 @@ public class AnnouncementController {
             announcementService.deleteAnnouncement(id);
             return ResponseEntity.status(200).body("Announcement deleted successfully");
         } catch (RuntimeException e) {
-            return ResponseEntity.status(400).body("Announcement cannot be deleted");
+            return ResponseEntity.status(400).body("Announcement cannot be deleted: " + e.getMessage());
         }
     }
 
@@ -86,7 +86,7 @@ public class AnnouncementController {
             announcementService.unassignBatch(id);
             return ResponseEntity.status(200).body("Batch unassigned successfully");
         } catch (RuntimeException e) {
-            return ResponseEntity.status(404).body("Batch not found");
+            return ResponseEntity.status(404).body("Batch not found: " + e.getMessage());
         }
     }
 
@@ -96,34 +96,55 @@ public class AnnouncementController {
             announcementService.unassignStudent(id);
             return ResponseEntity.status(200).body("Student unassigned successfully");
         } catch (RuntimeException e) {
-            return ResponseEntity.status(404).body("Student not found");
+            return ResponseEntity.status(404).body("Student not found: " + e.getMessage());
         }
     }
 
     @GetMapping("/{aid}")
     public ResponseEntity<?> getAnnouncement(@PathVariable Integer aid) {
-        return ResponseEntity.ok(announcementService.getAnnouncement(aid));
+        try {
+            announcementService.getAnnouncement(aid);
+            return ResponseEntity.ok(announcementService.getAnnouncement(aid));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body("Announcement not found: " + e.getMessage());
+        }
     }
 
 
     @GetMapping("/send/{uid}")
     public ResponseEntity<?> getAnnouncements(@PathVariable Integer uid) {
-        return ResponseEntity.ok(announcementService.getAllSendAnnouncements(uid));
+        try {
+            return ResponseEntity.ok(announcementService.getAllSendAnnouncements(uid));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body("Announcements not found");
+        }
     }
 
     @GetMapping("/draft/{uid}")
     public ResponseEntity<?> getDraftAnnouncements(@PathVariable Integer uid) {
-        return ResponseEntity.ok(announcementService.getAllDraftAnnouncements(uid));
+        try {
+            return ResponseEntity.ok(announcementService.getAllDraftAnnouncements(uid));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body("Announcements not found");
+        }
     }
 
     @GetMapping("/assigned/batch/{aid}")
     public ResponseEntity<?> getAssignedBatches(@PathVariable Integer aid) {
-        return ResponseEntity.ok(announcementService.getAssignBatchesByaID(aid));
+        try {
+            return ResponseEntity.ok(announcementService.getAssignBatchesByaID(aid));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body("Batches not found");
+        }
     }
 
     @GetMapping("/assigned/student/{aid}")
     public ResponseEntity<?> getAssignedStudents(@PathVariable Integer aid) {
-        return ResponseEntity.ok(announcementService.getAssignStudentsByaID(aid));
+        try {
+            return ResponseEntity.ok(announcementService.getAssignStudentsByaID(aid));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body("Students not found");
+        }
     }
 
 }
