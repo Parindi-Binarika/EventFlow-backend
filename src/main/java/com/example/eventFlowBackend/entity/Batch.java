@@ -33,4 +33,5 @@ public class Batch {
         this.createdAt = LocalDateTime.now(); // Automatically set the current timestamp
     }
 
+
 }

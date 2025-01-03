@@ -2,6 +2,7 @@ package com.example.eventFlowBackend.controller;
 
 import com.example.eventFlowBackend.entity.Event;
 import com.example.eventFlowBackend.entity.EventType;
+import com.example.eventFlowBackend.payload.AnnouncementDTO;
 import com.example.eventFlowBackend.payload.EventDTO;
 import com.example.eventFlowBackend.service.AnnouncementService;
 import com.example.eventFlowBackend.service.EventService;
@@ -46,7 +47,7 @@ public class EventController {
             eventService.markAttendance(eID, Long.valueOf(uID));
             return ResponseEntity.ok("Attendance marked successfully");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Failed to mark attendance");
+            return ResponseEntity.badRequest().body("Failed to mark attendance: " + e.getMessage());
         }
     }
 
@@ -61,28 +62,13 @@ public class EventController {
         }
     }
 
-    @PutMapping("/assign/{eID}/{aID}")
-    public ResponseEntity<?> assignAnnouncement(@PathVariable Integer eID, @PathVariable Integer aID) {
+    @PutMapping("/assign/{eID}")
+    public ResponseEntity<?> assignAnnouncement(@PathVariable Integer eID, @RequestBody AnnouncementDTO announcement) {
         try {
-            eventService.assignAnnouncement(eID, aID);
+            eventService.assignAnnouncement(eID, announcement);
             return ResponseEntity.ok("Announcement assigned successfully");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Failed to assign announcement");
-        }
-    }
-
-    @PutMapping("/unassign/{eID}")
-    public ResponseEntity<?> unassignAnnouncement(@PathVariable Integer eID) {
-        try {
-            Integer aID = eventService.removeAnnouncement(eID);
-            if(aID == null) {
-                return ResponseEntity.badRequest().body("Failed to unassign announcement");
-            } else {
-                announcementService.deleteAnnouncement(aID);
-            }
-            return ResponseEntity.ok("Announcement unassigned successfully");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Failed to unassign announcement");
+            return ResponseEntity.badRequest().body("Failed to assign announcement: " + e.getMessage());
         }
     }
 
@@ -106,16 +92,6 @@ public class EventController {
         }
     }
 
-    @DeleteMapping("/{eID}")
-    public ResponseEntity<?> delete(@PathVariable Integer eID) {
-        try {
-            eventService.delete(eID);
-            return ResponseEntity.ok("Event deleted successfully");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Failed to delete event");
-        }
-    }
-
     @DeleteMapping("/attendance/{seID}")
     public ResponseEntity<?> deleteAttendance(@PathVariable Integer seID) {
         try {
@@ -123,6 +99,16 @@ public class EventController {
             return ResponseEntity.ok("Attendance deleted successfully");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Failed to delete attendance");
+        }
+    }
+
+    @DeleteMapping("/{eID}")
+    public ResponseEntity<?> deleteEvent(@PathVariable Integer eID) {
+        try {
+            eventService.delete(eID);
+            return ResponseEntity.ok("Event deleted successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Failed to delete event");
         }
     }
 
@@ -141,6 +127,42 @@ public class EventController {
             return ResponseEntity.ok(eventService.getEvents(EventType.workshop, true));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Failed to get workshops: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/interview/completed")
+    public ResponseEntity<?> getCompletedEvents() {
+        try {
+            return ResponseEntity.ok(eventService.getEvents(EventType.interview, false));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Failed to get completed events: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/workshop/completed")
+    public ResponseEntity<?> getCompletedWorkshops() {
+        try {
+            return ResponseEntity.ok(eventService.getEvents(EventType.workshop, false));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Failed to get completed workshops: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/interview/upcoming")
+    public ResponseEntity<?> getUpcomingInterviews() {
+        try {
+            return ResponseEntity.ok(eventService.getEvents(EventType.interview, true));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Failed to get upcoming interviews: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/workshop/upcoming")
+    public ResponseEntity<?> getUpcomingWorkshops() {
+        try {
+            return ResponseEntity.ok(eventService.getEvents(EventType.workshop, true));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Failed to get upcoming workshops: " + e.getMessage());
         }
     }
 
