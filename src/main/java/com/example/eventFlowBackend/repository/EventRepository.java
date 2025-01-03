@@ -5,7 +5,9 @@ import com.example.eventFlowBackend.entity.EventType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface EventRepository extends JpaRepository<Event, Integer> {
-    List<Event> findAllByEventTypeAndIsActiveTrue(EventType eventType);
+    List<Event> findAllByEventTypeAndIsActive(EventType eventType, Boolean isActive);
+    Optional<Event> findByeIDAndAnnouncement_aID(Integer eID, Integer aID);
 }

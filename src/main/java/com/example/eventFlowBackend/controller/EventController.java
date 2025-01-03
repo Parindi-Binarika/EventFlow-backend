@@ -96,6 +96,16 @@ public class EventController {
         }
     }
 
+    @PutMapping("/complete/{eID}")
+    public ResponseEntity<?> completeEvent(@PathVariable Integer eID) {
+        try {
+            eventService.complete(eID);
+            return ResponseEntity.ok("Event completed successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Failed to complete event");
+        }
+    }
+
     @DeleteMapping("/{eID}")
     public ResponseEntity<?> delete(@PathVariable Integer eID) {
         try {
@@ -119,22 +129,22 @@ public class EventController {
     @GetMapping("/interview")
     public ResponseEntity<?> getInterviews() {
         try {
-            return ResponseEntity.ok(eventService.getEvents(EventType.interview));
+            return ResponseEntity.ok(eventService.getEvents(EventType.interview, true));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Failed to get interviews");
+            return ResponseEntity.badRequest().body("Failed to get interviews: " + e.getMessage());
         }
     }
 
     @GetMapping("/workshop")
     public ResponseEntity<?> getWorkshops() {
         try {
-            return ResponseEntity.ok(eventService.getEvents(EventType.workshop));
+            return ResponseEntity.ok(eventService.getEvents(EventType.workshop, true));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Failed to get workshops");
+            return ResponseEntity.badRequest().body("Failed to get workshops: " + e.getMessage());
         }
     }
 
-    @GetMapping("/eID")
+    @GetMapping("/{eID}")
     public ResponseEntity<Event> getEvent(@PathVariable Integer eID) {
         try {
             return ResponseEntity.ok(eventService.getEvent(eID));

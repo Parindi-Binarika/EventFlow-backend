@@ -1,9 +1,6 @@
 package com.example.eventFlowBackend.service;
 
-import com.example.eventFlowBackend.entity.Event;
-import com.example.eventFlowBackend.entity.EventType;
-import com.example.eventFlowBackend.entity.FeedbackType;
-import com.example.eventFlowBackend.entity.StudentEvent;
+import com.example.eventFlowBackend.entity.*;
 import com.example.eventFlowBackend.payload.EventAttendanceDTO;
 import com.example.eventFlowBackend.payload.EventDTO;
 import com.example.eventFlowBackend.repository.*;
@@ -58,6 +55,13 @@ public class EventService {
 
     public void assignAnnouncement(Integer eID, Integer aID) {
         try {
+            if (eventRepository.findByeIDAndAnnouncement_aID(eID, aID).isPresent()) {
+                throw new RuntimeException("Announcement already assigned");
+            }
+            Announcement announcement = announcementRepository.findById(aID).orElseThrow(() -> new RuntimeException("Announcement not found"));
+            if (announcement.getIsSent()) {
+                throw new RuntimeException("Cannot assign sent announcement");
+            }
             Event event = eventRepository.findById(eID).get();
             event.setAnnouncement(announcementRepository.findById(aID).get());
             eventRepository.save(event);
@@ -81,13 +85,22 @@ public class EventService {
     public void delete(Integer eID) {
         try {
             Event event = eventRepository.findById(eID).get();
-            if(event.getAnnouncement().getIsSent()) {
+            if(event.getAnnouncement() != null && event.getAnnouncement().getIsSent()) {
                 throw new RuntimeException("Cannot delete event with sent announcement");
             }
+            eventRepository.deleteById(eID);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to delete event: " + e.getMessage());
+        }
+    }
+
+    public void complete(Integer eID) {
+        try {
+            Event event = eventRepository.findById(eID).get();
             event.setIsActive(false);
             eventRepository.save(event);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to delete event");
+            throw new RuntimeException("Failed to complete event");
         }
     }
 
@@ -99,11 +112,11 @@ public class EventService {
         }
     }
 
-    public List<EventDTO> getEvents(EventType eventType) {
+    public List<EventDTO> getEvents(EventType eventType, Boolean isActive) {
         try {
             System.out.println(eventType);
             List<EventDTO> eventDTOs = new ArrayList<>();
-            eventRepository.findAllByEventTypeAndIsActiveTrue(eventType).forEach(event -> {
+            eventRepository.findAllByEventTypeAndIsActive(eventType,isActive).forEach(event -> {
                 EventDTO eventDTO = new EventDTO();
                 eventDTO.setEID(event.getEID());
                 eventDTO.setTitle(event.getTitle());
@@ -116,14 +129,17 @@ public class EventService {
                     eventDTO.setAID(event.getAnnouncement().getAID());
                 }
                 if (studentEventRepository.findTopByEvent_eID(event.getEID()) != null) {
-                    eventDTO.setGroup_fID(studentEventFeedbackRepository.findByStudentEvent_IdAndFeedback_FeedbackType(studentEventRepository.findTopByEvent_eID(event.getEID()).getId(),FeedbackType.group).getFeedback().getFID());
+                    StudentEventFeedback studentEventFeedback = studentEventFeedbackRepository.findByStudentEvent_IdAndFeedback_FeedbackType(studentEventRepository.findTopByEvent_eID(event.getEID()).getId(),FeedbackType.group);
+                    if (studentEventFeedback != null){
+                        eventDTO.setGroup_fID(studentEventFeedback.getFeedback().getFID());
+                    }
                 }
                 eventDTOs.add(eventDTO);
             });
             return eventDTOs;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
-            throw new RuntimeException("Failed to get events");
+            //System.out.println(e.getMessage());
+            throw new RuntimeException("Failed to get events: " + e.getMessage());
         }
     }
 
