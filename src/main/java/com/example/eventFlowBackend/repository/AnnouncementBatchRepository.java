@@ -9,6 +9,7 @@ import java.util.Optional;
 
 public interface AnnouncementBatchRepository extends JpaRepository<AnnouncementBatch, Integer> {
     List<AnnouncementBatch> findByAnnouncement_aID(Integer announcementId);
+    List<AnnouncementBatch> findByBatch_bID(Integer batchId);
     void deleteByAnnouncement_aID(Integer announcementId);
     Optional<AnnouncementBatch> findByBatch_bIDAndAnnouncement_aID(Integer batchId, Integer announcementId);
 

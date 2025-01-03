@@ -59,11 +59,12 @@ public class EventService {
 
     public void assignAnnouncement(Integer eID, AnnouncementDTO announcementDTO) {
         try {
-            Announcement announcement = announcementService.createAnnouncement(announcementDTO);
+            AnnouncementDTO resannouncementDTO = announcementService.createAnnouncement(announcementDTO);
             Event event = eventRepository.findById(eID).orElseThrow(() -> new RuntimeException("Event not found"));
             if (event.getAnnouncement() != null) {
                 throw new RuntimeException("Announcement already assigned");
             }
+            Announcement announcement = announcementRepository.findById(resannouncementDTO.getAID()).orElseThrow(() -> new RuntimeException("Announcement not found"));
             event.setAnnouncement(announcement);
             eventRepository.save(event);
         } catch (Exception e) {

@@ -8,6 +8,7 @@ import java.util.Optional;
 
 public interface AnnouncementStudentRepository extends JpaRepository<AnnouncementStudent, Integer> {
     List<AnnouncementStudent> findByAnnouncement_aID(Integer announcementId);
+    List<AnnouncementStudent> findByUser_uID(Integer userId);
     void deleteByAnnouncement_aID(Integer announcementId);
     Optional<AnnouncementStudent> findByUser_uIDAndAnnouncement_aID(Integer userId, Integer announcementId);
 }
