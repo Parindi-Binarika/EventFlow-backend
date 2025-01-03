@@ -19,18 +19,13 @@ public class AnnouncementController {
     @PostMapping
     public ResponseEntity<?> create(@RequestBody AnnouncementDTO announcementDTO) {
         try {
-            AnnouncementDTO resannouncementDTO = new AnnouncementDTO();
-            Announcement announcement = announcementService.createAnnouncement(announcementDTO);
-            resannouncementDTO.setAID(announcement.getAID());
-            resannouncementDTO.setSubject(announcement.getSubject());
-            resannouncementDTO.setMessage(announcement.getMessage());
-            return ResponseEntity.ok(resannouncementDTO);
+            return ResponseEntity.ok(announcementService.createAnnouncement(announcementDTO));
         } catch (RuntimeException e) {
             return ResponseEntity.status(400).body("Failed to create announcement");
         }
     }
 
-    @GetMapping("/ByAnnouncement/{aid}")
+    @GetMapping("/{aid}")
     public ResponseEntity<?> getAnnouncement(@PathVariable Integer aid) {
         try {
             announcementService.getAnnouncement(aid);
@@ -41,7 +36,7 @@ public class AnnouncementController {
     }
 
 
-    @GetMapping("/ByUser/{uid}")
+    @GetMapping("/created_by/{uid}")
     public ResponseEntity<?> getAnnouncementsByuID(@PathVariable Integer uid) {
         try {
             return ResponseEntity.ok(announcementService.getAllAnnouncementsByUID(uid));

@@ -31,7 +31,7 @@ public class AnnouncementService {
         this.announcementStudentRepository = announcementStudentRepository;
     }
 
-    public Announcement createAnnouncement(AnnouncementDTO announcementDTO) {
+    public AnnouncementDTO createAnnouncement(AnnouncementDTO announcementDTO) {
         try {
             Announcement announcement = new Announcement();
             announcement.setSubject(announcementDTO.getSubject());
@@ -58,31 +58,35 @@ public class AnnouncementService {
                 });
             }
 
-            return newAnnouncement;
+            return fillStudentAndBatch(newAnnouncement);
         } catch (Exception e) {
             throw new RuntimeException("Failed to create announcement");
         }
     }
 
-    public AnnouncementDTO getAnnouncement(Integer aID) {
+    private AnnouncementDTO fillStudentAndBatch(Announcement announcement) {
         AnnouncementDTO announcementDTO = new AnnouncementDTO();
+        announcementDTO.setAID(announcement.getAID());
+        announcementDTO.setSubject(announcement.getSubject());
+        announcementDTO.setMessage(announcement.getMessage());
+        announcementDTO.setCreatedBy(Long.valueOf(announcement.getCreatedBy().getUID()));
+        ArrayList<Integer> batches = new ArrayList<>();
+        ArrayList<Integer> students = new ArrayList<>();
+        announcementBatchRepository.findByAnnouncement_aID(announcement.getAID()).forEach(announcementBatch -> {
+            batches.add(announcementBatch.getBatch().getBID());
+        });
+        announcementStudentRepository.findByAnnouncement_aID(announcement.getAID()).forEach(announcementStudent -> {
+            students.add(announcementStudent.getUser().getUID());
+        });
+        announcementDTO.setBatches(batches);
+        announcementDTO.setStudents(students);
+        return announcementDTO;
+    }
+
+    public AnnouncementDTO getAnnouncement(Integer aID) {
         try {
             Announcement announcement = announcementRepository.findById(aID).orElseThrow(() -> new RuntimeException("Announcement not found"));
-            announcementDTO.setSubject(announcement.getSubject());
-            announcementDTO.setMessage(announcement.getMessage());
-            announcementDTO.setCreatedBy(Long.valueOf(announcement.getCreatedBy().getUID()));
-            announcementDTO.setAID(announcement.getAID());
-            ArrayList<Integer> batches = new ArrayList<>();
-            ArrayList<Integer> students = new ArrayList<>();
-            announcementBatchRepository.findByAnnouncement_aID(announcement.getAID()).forEach(announcementBatch -> {
-                batches.add(announcementBatch.getBatch().getBID());
-            });
-            announcementStudentRepository.findByAnnouncement_aID(announcement.getAID()).forEach(announcementStudent -> {
-                students.add(announcementStudent.getUser().getUID());
-            });
-            announcementDTO.setBatches(batches);
-            announcementDTO.setStudents(students);
-            return announcementDTO;
+            return fillStudentAndBatch(announcement);
         } catch (Exception e) {
             throw new RuntimeException("Failed to get announcement");
         }
@@ -92,22 +96,7 @@ public class AnnouncementService {
         List<AnnouncementDTO> announcementDTOS = new ArrayList<>();
         try {
             announcementRepository.findByCreatedBy_uID(userId).forEach(announcement -> {
-                AnnouncementDTO announcementDTO = new AnnouncementDTO();
-                announcementDTO.setAID(announcement.getAID());
-                announcementDTO.setSubject(announcement.getSubject());
-                announcementDTO.setMessage(announcement.getMessage());
-                announcementDTO.setCreatedBy(Long.valueOf(announcement.getCreatedBy().getUID()));
-                ArrayList<Integer> batches = new ArrayList<>();
-                ArrayList<Integer> students = new ArrayList<>();
-                announcementBatchRepository.findByAnnouncement_aID(announcement.getAID()).forEach(announcementBatch -> {
-                    batches.add(announcementBatch.getBatch().getBID());
-                });
-                announcementStudentRepository.findByAnnouncement_aID(announcement.getAID()).forEach(announcementStudent -> {
-                    students.add(announcementStudent.getUser().getUID());
-                });
-                announcementDTO.setBatches(batches);
-                announcementDTO.setStudents(students);
-                announcementDTOS.add(announcementDTO);
+                announcementDTOS.add(fillStudentAndBatch(announcement));
             });
             return announcementDTOS;
         } catch (Exception e) {
