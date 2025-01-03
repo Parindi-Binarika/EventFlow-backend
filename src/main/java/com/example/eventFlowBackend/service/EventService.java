@@ -1,6 +1,7 @@
 package com.example.eventFlowBackend.service;
 
 import com.example.eventFlowBackend.entity.*;
+import com.example.eventFlowBackend.payload.AnnouncementDTO;
 import com.example.eventFlowBackend.payload.EventAttendanceDTO;
 import com.example.eventFlowBackend.payload.EventDTO;
 import com.example.eventFlowBackend.repository.*;
@@ -19,12 +20,15 @@ public class EventService {
 
     StudentEventRepository studentEventRepository;
 
-    public EventService(EventRepository eventRepository, UserRepository userRepository, AnnouncementRepository announcementRepository, StudentEventRepository studentEventRepository, StudentEventFeedbackRepository studentEventFeedbackRepository) {
+    AnnouncementService announcementService;
+
+    public EventService(EventRepository eventRepository, UserRepository userRepository, AnnouncementRepository announcementRepository, StudentEventRepository studentEventRepository, StudentEventFeedbackRepository studentEventFeedbackRepository, AnnouncementService announcementService) {
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
         this.announcementRepository = announcementRepository;
         this.studentEventRepository = studentEventRepository;
         this.studentEventFeedbackRepository = studentEventFeedbackRepository;
+        this.announcementService = announcementService;
     }
 
     public void create(EventDTO eventDTO, EventType eventType) {
@@ -53,44 +57,17 @@ public class EventService {
         }
     }
 
-    public void assignAnnouncement(Integer eID, Integer aID) {
+    public void assignAnnouncement(Integer eID, AnnouncementDTO announcementDTO) {
         try {
-            if (eventRepository.findByeIDAndAnnouncement_aID(eID, aID).isPresent()) {
+            Announcement announcement = announcementService.createAnnouncement(announcementDTO);
+            Event event = eventRepository.findById(eID).orElseThrow(() -> new RuntimeException("Event not found"));
+            if (event.getAnnouncement() != null) {
                 throw new RuntimeException("Announcement already assigned");
             }
-            Announcement announcement = announcementRepository.findById(aID).orElseThrow(() -> new RuntimeException("Announcement not found"));
-            if (announcement.getIsSent()) {
-                throw new RuntimeException("Cannot assign sent announcement");
-            }
-            Event event = eventRepository.findById(eID).get();
-            event.setAnnouncement(announcementRepository.findById(aID).get());
+            event.setAnnouncement(announcement);
             eventRepository.save(event);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to assign announcement");
-        }
-    }
-
-    public Integer removeAnnouncement(Integer eID) {
-        try {
-            Event event = eventRepository.findById(eID).get();
-            Integer aID = event.getAnnouncement().getAID();
-            event.setAnnouncement(null);
-            eventRepository.save(event);
-            return aID;
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to remove announcement");
-        }
-    }
-
-    public void delete(Integer eID) {
-        try {
-            Event event = eventRepository.findById(eID).get();
-            if(event.getAnnouncement() != null && event.getAnnouncement().getIsSent()) {
-                throw new RuntimeException("Cannot delete event with sent announcement");
-            }
-            eventRepository.deleteById(eID);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to delete event: " + e.getMessage());
+            throw new RuntimeException("Failed to assign announcement: " + e.getMessage());
         }
     }
 
@@ -145,12 +122,15 @@ public class EventService {
 
     public void markAttendance(Integer eID, Long uID) {
         try {
+            if (studentEventRepository.findByEvent_eIDAndUser_uID(eID, uID).isPresent()) {
+                throw new RuntimeException("Attendance already marked");
+            }
             StudentEvent studentEvent = new StudentEvent();
             studentEvent.setEvent(eventRepository.findById(eID).get());
             studentEvent.setUser(userRepository.findById(uID).get());
             studentEventRepository.save(studentEvent);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to mark attendance");
+            throw new RuntimeException("Failed to mark attendance: " + e.getMessage());
         }
     }
 
@@ -159,6 +139,18 @@ public class EventService {
             studentEventRepository.deleteById(seID);
         } catch (Exception e) {
             throw new RuntimeException("Failed to delete attendance");
+        }
+    }
+
+    public void delete(Integer eID) {
+        try {
+            Event event = eventRepository.findById(eID).get();
+            if (event.getAnnouncement() != null) {
+                throw new RuntimeException("Announcement already assigned cannot delete event");
+            }
+            eventRepository.deleteById(eID);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to delete event");
         }
     }
 

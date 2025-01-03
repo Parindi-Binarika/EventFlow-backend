@@ -9,5 +9,5 @@ import java.util.Optional;
 
 public interface EventRepository extends JpaRepository<Event, Integer> {
     List<Event> findAllByEventTypeAndIsActive(EventType eventType, Boolean isActive);
-    Optional<Event> findByeIDAndAnnouncement_aID(Integer eID, Integer aID);
+    Optional<Event> findByAnnouncement_aID(Integer aID);
 }
