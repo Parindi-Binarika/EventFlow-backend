@@ -72,13 +72,23 @@ public class AnnouncementService {
             announcementDTO.setMessage(announcement.getMessage());
             announcementDTO.setCreatedBy(Long.valueOf(announcement.getCreatedBy().getUID()));
             announcementDTO.setAID(announcement.getAID());
+            ArrayList<Integer> batches = new ArrayList<>();
+            ArrayList<Integer> students = new ArrayList<>();
+            announcementBatchRepository.findByAnnouncement_aID(announcement.getAID()).forEach(announcementBatch -> {
+                batches.add(announcementBatch.getBatch().getBID());
+            });
+            announcementStudentRepository.findByAnnouncement_aID(announcement.getAID()).forEach(announcementStudent -> {
+                students.add(announcementStudent.getUser().getUID());
+            });
+            announcementDTO.setBatches(batches);
+            announcementDTO.setStudents(students);
             return announcementDTO;
         } catch (Exception e) {
             throw new RuntimeException("Failed to get announcement");
         }
     }
 
-    public List<AnnouncementDTO> getAllSendAnnouncements(Integer userId) {
+    public List<AnnouncementDTO> getAllAnnouncementsByUID(Integer userId) {
         List<AnnouncementDTO> announcementDTOS = new ArrayList<>();
         try {
             announcementRepository.findByCreatedBy_uID(userId).forEach(announcement -> {
@@ -87,6 +97,16 @@ public class AnnouncementService {
                 announcementDTO.setSubject(announcement.getSubject());
                 announcementDTO.setMessage(announcement.getMessage());
                 announcementDTO.setCreatedBy(Long.valueOf(announcement.getCreatedBy().getUID()));
+                ArrayList<Integer> batches = new ArrayList<>();
+                ArrayList<Integer> students = new ArrayList<>();
+                announcementBatchRepository.findByAnnouncement_aID(announcement.getAID()).forEach(announcementBatch -> {
+                    batches.add(announcementBatch.getBatch().getBID());
+                });
+                announcementStudentRepository.findByAnnouncement_aID(announcement.getAID()).forEach(announcementStudent -> {
+                    students.add(announcementStudent.getUser().getUID());
+                });
+                announcementDTO.setBatches(batches);
+                announcementDTO.setStudents(students);
                 announcementDTOS.add(announcementDTO);
             });
             return announcementDTOS;
@@ -126,6 +146,40 @@ public class AnnouncementService {
             return assignedStudentResponses;
         } catch (Exception e) {
             throw new RuntimeException("Failed to get assigned students");
+        }
+    }
+
+    public List<AnnouncementDTO> getAssignAnnouncementByUID(Integer uid) {
+        try {
+            List<AnnouncementDTO> announcementDTOS = new ArrayList<>();
+            announcementStudentRepository.findByUser_uID(uid).forEach(announcementStudent -> {
+                AnnouncementDTO announcementDTO = new AnnouncementDTO();
+                announcementDTO.setAID(announcementStudent.getAnnouncement().getAID());
+                announcementDTO.setSubject(announcementStudent.getAnnouncement().getSubject());
+                announcementDTO.setMessage(announcementStudent.getAnnouncement().getMessage());
+                announcementDTO.setCreatedBy(Long.valueOf(announcementStudent.getAnnouncement().getCreatedBy().getUID()));
+                announcementDTOS.add(announcementDTO);
+            });
+            return announcementDTOS;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to get assigned announcements");
+        }
+    }
+
+    public List<AnnouncementDTO> getAssignAnnouncementBybID(Integer bid) {
+        try {
+            List<AnnouncementDTO> announcementDTOS = new ArrayList<>();
+            announcementBatchRepository.findByBatch_bID(bid).forEach(announcementBatch -> {
+                AnnouncementDTO announcementDTO = new AnnouncementDTO();
+                announcementDTO.setAID(announcementBatch.getAnnouncement().getAID());
+                announcementDTO.setSubject(announcementBatch.getAnnouncement().getSubject());
+                announcementDTO.setMessage(announcementBatch.getAnnouncement().getMessage());
+                announcementDTO.setCreatedBy(Long.valueOf(announcementBatch.getAnnouncement().getCreatedBy().getUID()));
+                announcementDTOS.add(announcementDTO);
+            });
+            return announcementDTOS;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to get assigned announcements");
         }
     }
 

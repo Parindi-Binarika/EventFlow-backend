@@ -30,7 +30,7 @@ public class AnnouncementController {
         }
     }
 
-    @GetMapping("/{aid}")
+    @GetMapping("/ByAnnouncement/{aid}")
     public ResponseEntity<?> getAnnouncement(@PathVariable Integer aid) {
         try {
             announcementService.getAnnouncement(aid);
@@ -41,10 +41,10 @@ public class AnnouncementController {
     }
 
 
-    @GetMapping("/{uid}")
-    public ResponseEntity<?> getAnnouncements(@PathVariable Integer uid) {
+    @GetMapping("/ByUser/{uid}")
+    public ResponseEntity<?> getAnnouncementsByuID(@PathVariable Integer uid) {
         try {
-            return ResponseEntity.ok(announcementService.getAllSendAnnouncements(uid));
+            return ResponseEntity.ok(announcementService.getAllAnnouncementsByUID(uid));
         } catch (RuntimeException e) {
             return ResponseEntity.status(404).body("Announcements not found");
         }
@@ -65,6 +65,24 @@ public class AnnouncementController {
             return ResponseEntity.ok(announcementService.getAssignStudentsByaID(aid));
         } catch (RuntimeException e) {
             return ResponseEntity.status(404).body("Students not found");
+        }
+    }
+
+    @GetMapping("/assigned/announcement/student/{uid}")
+    public ResponseEntity<?> getAssignedAnnouncements(@PathVariable Integer uid) {
+        try {
+            return ResponseEntity.ok(announcementService.getAssignAnnouncementByUID(uid));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body("Announcements not found");
+        }
+    }
+
+    @GetMapping("/assigned/announcement/batch/{bID}")
+    public ResponseEntity<?> assignAnnouncement(@PathVariable Integer bID) {
+        try {
+            return ResponseEntity.ok(announcementService.getAssignAnnouncementBybID(bID));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body("Announcements not found");
         }
     }
 
