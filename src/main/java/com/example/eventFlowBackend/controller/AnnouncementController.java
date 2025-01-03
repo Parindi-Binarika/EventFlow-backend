@@ -30,76 +30,6 @@ public class AnnouncementController {
         }
     }
 
-    @PostMapping("/assign/batch/{aID}/{bID}")
-    public ResponseEntity<?> assignBatch(@PathVariable Integer aID, @PathVariable Integer bID) {
-        try {
-            announcementService.assignBatch(aID, bID);
-            return ResponseEntity.status(200).body("Batch assigned successfully");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(400).body("Failed to assign batch: " + e.getMessage());
-        }
-    }
-
-    @PostMapping("/assign/student/{aID}/{uID}")
-    public ResponseEntity<?> assignStudent(@PathVariable Integer aID, @PathVariable Integer uID) {
-        try {
-            announcementService.assignStudent(aID, uID);
-            return ResponseEntity.status(200).body("Student assigned successfully");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(400).body("Failed to assign student: " + e.getMessage());
-        }
-    }
-
-    @PutMapping("/send/{aid}")
-    public ResponseEntity<?> sendAnnouncement(@PathVariable Integer aid) {
-        try {
-            announcementService.sendAnnouncement(aid);
-            return ResponseEntity.status(200).body("Announcement sent successfully");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(400).body("Failed to send announcement: " + e.getMessage());
-        }
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Integer id, @RequestBody AnnouncementDTO updatedAnnouncement) {
-        try {
-            announcementService.updateAnnouncement(id, updatedAnnouncement);
-            return ResponseEntity.status(200).body("Announcement updated successfully");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(404).body("Announcement not found: " + e.getMessage());
-        }
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Integer id) {
-        try {
-            announcementService.deleteAnnouncement(id);
-            return ResponseEntity.status(200).body("Announcement deleted successfully");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(400).body("Announcement cannot be deleted: " + e.getMessage());
-        }
-    }
-
-    @DeleteMapping("/unassign/batch/{id}")
-    public ResponseEntity<?> unassignBatch(@PathVariable Integer id) {
-        try {
-            announcementService.unassignBatch(id);
-            return ResponseEntity.status(200).body("Batch unassigned successfully");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(400).body("Batch not found: " + e.getMessage());
-        }
-    }
-
-    @DeleteMapping("/unassign/student/{id}")
-    public ResponseEntity<?> unassignStudent(@PathVariable Integer id) {
-        try {
-            announcementService.unassignStudent(id);
-            return ResponseEntity.status(200).body("Student unassigned successfully");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(400).body("Student not found: " + e.getMessage());
-        }
-    }
-
     @GetMapping("/{aid}")
     public ResponseEntity<?> getAnnouncement(@PathVariable Integer aid) {
         try {
@@ -111,19 +41,10 @@ public class AnnouncementController {
     }
 
 
-    @GetMapping("/send/{uid}")
+    @GetMapping("/{uid}")
     public ResponseEntity<?> getAnnouncements(@PathVariable Integer uid) {
         try {
             return ResponseEntity.ok(announcementService.getAllSendAnnouncements(uid));
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(404).body("Announcements not found");
-        }
-    }
-
-    @GetMapping("/draft/{uid}")
-    public ResponseEntity<?> getDraftAnnouncements(@PathVariable Integer uid) {
-        try {
-            return ResponseEntity.ok(announcementService.getAllDraftAnnouncements(uid));
         } catch (RuntimeException e) {
             return ResponseEntity.status(404).body("Announcements not found");
         }
