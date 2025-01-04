@@ -11,4 +11,7 @@ public interface StudentEventRepository extends JpaRepository<StudentEvent, Inte
     List<StudentEvent> findAllByUser_uID(Integer userUID);
     StudentEvent findTopByEvent_eID(Integer eventEID);
     Optional<StudentEvent> findByEvent_eIDAndUser_uID(Integer eventEID, Long userUID);
+    boolean existsByEvent_eID(Integer eventEID);
+    Integer countAllByEvent_eID(Integer eventEID);
+    Integer countAllByEvent_eIDAndAttended(Integer eventEID, Boolean attended);
 }

@@ -28,6 +28,6 @@ public class Event {
     private User createdBy;
 
     @OneToOne
-    @JoinColumn(name = "aID", referencedColumnName = "aID")
+    @JoinColumn(name = "aID", referencedColumnName = "aID",nullable = true)
     private Announcement announcement;
 }

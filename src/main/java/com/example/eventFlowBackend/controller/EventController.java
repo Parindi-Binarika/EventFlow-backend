@@ -63,7 +63,7 @@ public class EventController {
         }
     }
 
-    @PutMapping("/assign/{eID}")
+    @PostMapping("/create/announcement/{eID}")
     public ResponseEntity<?> assignAnnouncement(@PathVariable Integer eID, @RequestBody AnnouncementDTO announcement) {
         try {
             eventService.assignAnnouncement(eID, announcement);
@@ -191,6 +191,15 @@ public class EventController {
             return ResponseEntity.ok(eventService.getAttendanceByUser(Long.valueOf(uID)));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Failed to get attendance");
+        }
+    }
+
+    @GetMapping("/attendance/analytics/{eID}")
+    public ResponseEntity<?> getAttendanceAnalytics(@PathVariable Integer eID) {
+        try {
+            return ResponseEntity.ok(eventService.getAttendanceAnalysis(eID));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Failed to get attendance analytics");
         }
     }
 
