@@ -23,6 +23,9 @@ public class StudentEvent {
     private Event event;
 
     @Column
+    private Boolean attended = false;
+
+    @Column
     private Integer points;
 
     @Column

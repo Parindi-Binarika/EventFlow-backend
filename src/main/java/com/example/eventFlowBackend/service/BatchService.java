@@ -4,6 +4,7 @@ import com.example.eventFlowBackend.entity.Batch;
 import com.example.eventFlowBackend.entity.Role;
 import com.example.eventFlowBackend.entity.StudentBatch;
 import com.example.eventFlowBackend.entity.User;
+import com.example.eventFlowBackend.payload.AttendanceDTO;
 import com.example.eventFlowBackend.payload.BatchDTO;
 import com.example.eventFlowBackend.payload.UserDTO;
 import com.example.eventFlowBackend.repository.BatchRepository;
@@ -38,18 +39,22 @@ public class BatchService {
         }
     }
 
-    public void assignUser(Long bID, Long uID) {
+    public void assignUser(Long bID, AttendanceDTO attendanceDTO) {
         try {
-            StudentBatch studentBatch = new StudentBatch();
-            studentBatch.setBatch(batchRepository.findById(bID).orElseThrow(() -> new RuntimeException("Batch not found")));
-            studentBatch.setUser(userRepository.findById(uID).orElseThrow(() -> new RuntimeException("User not found")));
-            if (studentBatch.getUser().getRole() != Role.student) {
-                throw new RuntimeException("User is not a student");
+            if (batchRepository.findById(bID).isEmpty()) {
+                throw new RuntimeException("Batch not found");
             }
-            if (studentBatchRepository.findByUser_uIDAndBatch_bID(uID, bID).isPresent()) {
-                throw new RuntimeException("User is already assigned to batch");
-            }
-            studentBatchRepository.save(studentBatch);
+            attendanceDTO.getStudents().forEach(student -> {
+                if (userRepository.findById(student).isPresent()) {
+                    if (studentBatchRepository.findByUser_uIDAndBatch_bID(student, bID).isEmpty()) {
+                        User user = userRepository.findById(student).get();
+                        StudentBatch studentBatch = new StudentBatch();
+                        studentBatch.setBatch(batchRepository.findById(bID).get());
+                        studentBatch.setUser(user);
+                        studentBatchRepository.save(studentBatch);
+                    }
+                }
+            });
         } catch (RuntimeException e) {
             System.out.println(e.getMessage());
             throw new RuntimeException("Error assigning user to batch: " + e.getMessage());
