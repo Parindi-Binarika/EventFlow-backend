@@ -15,13 +15,13 @@ public class PortfolioController {
         this.portfolioService = portfolioService;
     }
 
-    @PostMapping()
-    public ResponseEntity<?> createPortfolio(@RequestBody PortfolioDTO portfolioDTO) {
+    @PostMapping("/create/{uid}")
+    public ResponseEntity<?> createPortfolio(@PathVariable Integer uid,@RequestBody PortfolioDTO portfolioDTO) {
         try {
-            portfolioService.createPortfolio(portfolioDTO);
+            portfolioService.createPortfolio(uid,portfolioDTO);
             return ResponseEntity.status(200).body("Portfolio created successfully");
         } catch (RuntimeException e) {
-            return ResponseEntity.status(400).body("Failed to create portfolio");
+            return ResponseEntity.status(400).body("Failed to create portfolio: " + e.getMessage());
         }
     }
 
@@ -61,11 +61,11 @@ public class PortfolioController {
             PortfolioDTO portfolioDTO = portfolioService.getPortfolio(id);
             return ResponseEntity.status(200).body(portfolioDTO);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(400).body("Failed to get portfolio");
+            return ResponseEntity.status(400).body("Failed to get portfolio: " + e.getMessage());
         }
     }
 
-    @GetMapping("/{uid}")
+    @GetMapping("/by_user/{uid}")
     public ResponseEntity<?> getPortfolioByUID(@PathVariable Integer uid) {
         try {
             PortfolioDTO portfolioDTO = portfolioService.getPortfolioByUserId(uid);
@@ -81,7 +81,7 @@ public class PortfolioController {
             PortfolioDTO portfolioDTO = portfolioService.getPublicPortfoliosByUserId(uid);
             return ResponseEntity.status(200).body(portfolioDTO);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(400).body("Failed to get portfolio");
+            return ResponseEntity.status(400).body("Failed to get portfolio: " + e.getMessage());
         }
     }
 }

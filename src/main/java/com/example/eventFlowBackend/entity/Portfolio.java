@@ -21,7 +21,7 @@ public class Portfolio {
     @Column
     private String linkedinUsername;
     @Column(columnDefinition = "BOOLEAN DEFAULT FALSE")
-    private Boolean isPublic;
+    private Boolean isPublic = false;
     @OneToOne
     @JoinColumn(name = "uID",referencedColumnName = "uID")
     private User user;
