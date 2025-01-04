@@ -1,5 +1,6 @@
 package com.example.eventFlowBackend.controller;
 
+import com.example.eventFlowBackend.payload.AddIndividualFeedbackRequest;
 import com.example.eventFlowBackend.payload.FeedbackDTO;
 import com.example.eventFlowBackend.service.FeedbackService;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +18,10 @@ public class FeedbackController {
         this.feedbackService = feedbackService;
     }
 
-    @PostMapping("/create/individual/{seID}")
-    public ResponseEntity<?> createIndividualFeedback(@PathVariable Integer seID,@RequestBody FeedbackDTO feedbackDTO) {
+    @PostMapping("/create/individual")
+    public ResponseEntity<?> createIndividualFeedback(@RequestBody AddIndividualFeedbackRequest addIndividualFeedbackRequest) {
         try {
-            feedbackService.createIndividualFeedback(feedbackDTO, seID);
+            feedbackService.createIndividualFeedback(addIndividualFeedbackRequest);
             return ResponseEntity.ok("Feedback created successfully");
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -38,23 +39,13 @@ public class FeedbackController {
         }
     }
 
-    @PostMapping("/update/{fID}")
+    @PutMapping("/update/{fID}")
     public ResponseEntity<?> update(@PathVariable Integer fID,@RequestBody FeedbackDTO feedbackDTO) {
         try {
             feedbackService.update(fID, feedbackDTO);
             return ResponseEntity.ok("Feedback updated successfully");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Failed to update feedback");
-        }
-    }
-
-    @DeleteMapping("/{fID}")
-    public ResponseEntity<?> delete(@PathVariable Integer fID) {
-        try {
-            feedbackService.delete(fID);
-            return ResponseEntity.ok("Feedback deleted successfully");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Failed to delete feedback");
         }
     }
 
