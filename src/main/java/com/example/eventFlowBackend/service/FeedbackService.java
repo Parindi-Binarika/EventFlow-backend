@@ -3,6 +3,7 @@ package com.example.eventFlowBackend.service;
 import com.example.eventFlowBackend.entity.Feedback;
 import com.example.eventFlowBackend.entity.FeedbackType;
 import com.example.eventFlowBackend.entity.StudentEventFeedback;
+import com.example.eventFlowBackend.payload.AddIndividualFeedbackRequest;
 import com.example.eventFlowBackend.payload.FeedbackDTO;
 import com.example.eventFlowBackend.repository.FeedbackRepository;
 import com.example.eventFlowBackend.repository.StudentEventFeedbackRepository;
@@ -26,16 +27,21 @@ public class FeedbackService {
         this.studentEventRepository = studentEventRepository;
     }
 
-    public void createIndividualFeedback(FeedbackDTO feedbackDTO, Integer seID) {
+    public void createIndividualFeedback(AddIndividualFeedbackRequest addIndividualFeedbackRequest) {
         try {
-            Feedback feedback = new Feedback();
-            feedback.setFeedback(feedbackDTO.getFeedback());
-            feedback.setFeedbackType(FeedbackType.individual);
-            Feedback res = feedbackRepository.save(feedback);
-            StudentEventFeedback studentEventFeedback = new StudentEventFeedback();
-            studentEventFeedback.setFeedback(res);
-            studentEventFeedback.setStudentEvent(studentEventRepository.findById(seID).get());
-            studentEventFeedbackRepository.save(studentEventFeedback);
+
+            addIndividualFeedbackRequest.getIndividualFeedbackDTOS().forEach(individualFeedbackDTO -> {
+                Feedback feedback = new Feedback();
+                feedback.setFeedback(individualFeedbackDTO.getFeedback());
+                feedback.setFeedbackType(FeedbackType.individual);
+                Feedback res = feedbackRepository.save(feedback);
+                StudentEventFeedback studentEventFeedback = new StudentEventFeedback();
+                studentEventFeedback.setFeedback(res);
+                if(studentEventRepository.findById(individualFeedbackDTO.getSeID()).isPresent()){
+                    studentEventFeedback.setStudentEvent(studentEventRepository.findById(individualFeedbackDTO.getSeID()).get());
+                    studentEventFeedbackRepository.save(studentEventFeedback);
+                }
+            });
         } catch (Exception e) {
             throw new RuntimeException("Failed to create feedback: " + e.getMessage());
         }
@@ -66,15 +72,6 @@ public class FeedbackService {
             feedbackRepository.save(feedback);
         } catch (Exception e) {
             throw new RuntimeException("Failed to update feedback");
-        }
-    }
-
-    public void delete(Integer fID) {
-        try {
-            studentEventFeedbackRepository.deleteAllByFeedback_fID(fID);
-            feedbackRepository.deleteById(fID);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to delete feedback");
         }
     }
 
