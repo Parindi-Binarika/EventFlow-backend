@@ -8,6 +8,7 @@ import com.example.eventFlowBackend.repository.ProjectRepository;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -33,7 +34,7 @@ public class ProjectService {
             project.setPortfolio(portfolio);
             projectRepository.save(project);
         } catch (RuntimeException e) {
-            throw new RuntimeException("Failed to create project");
+            throw new RuntimeException("Failed to create project: " + e.getMessage());
         }
     }
 
@@ -58,23 +59,24 @@ public class ProjectService {
         }
     }
 
-    public void assignProjectToPortfolio(Integer projectId, Integer portfolioId) {
+    public List<ProjectDTO> getProjectsByPortfolio(Integer portfolioId) {
         try {
-            Project project = projectRepository.findById(projectId).orElseThrow(() -> new RuntimeException("Project not found"));
-            Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(() -> new RuntimeException("Portfolio not found"));
-            project.setPortfolio(portfolio);
-            projectRepository.save(project);
+            List<ProjectDTO> projects = new ArrayList<>();
+            if (!portfolioRepository.existsById(portfolioId)) {
+                throw new RuntimeException("Portfolio not found");
+            }
+            projectRepository.findByPortfolio_pID(portfolioId).forEach(project -> {
+                ProjectDTO projectDTO = new ProjectDTO();
+                projectDTO.setProID(project.getProID());
+                projectDTO.setDisplayName(project.getDisplayName());
+                projectDTO.setDescription(project.getDescription());
+                projectDTO.setTechnologies(project.getTechnologies());
+                projectDTO.setResourcesLink(project.getResourcesLink());
+                projects.add(projectDTO);
+            });
+            return projects;
         } catch (RuntimeException e) {
-            throw new RuntimeException("Failed to assign project to portfolio");
-        }
-    }
-
-    public List<Project> getProjectsByPortfolio(Integer portfolioId) {
-        try {
-            Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow(() -> new RuntimeException("Portfolio not found"));
-            return projectRepository.findByPortfolio_pID(portfolio.getPID());
-        } catch (RuntimeException e) {
-            throw new RuntimeException("Failed to get projects by portfolio");
+            throw new RuntimeException("Failed to get projects by portfolio: " + e.getMessage());
         }
     }
 

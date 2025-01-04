@@ -9,6 +9,7 @@ public class EventAttendanceDTO {
     private Integer seID;
     private Integer uID;
     private Integer eID;
+    private Boolean attended;
     private String title;
     private String description;
     private Integer points;

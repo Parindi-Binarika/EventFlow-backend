@@ -19,12 +19,7 @@ public class AnnouncementController {
     @PostMapping
     public ResponseEntity<?> create(@RequestBody AnnouncementDTO announcementDTO) {
         try {
-            AnnouncementDTO resannouncementDTO = new AnnouncementDTO();
-            Announcement announcement = announcementService.createAnnouncement(announcementDTO);
-            resannouncementDTO.setAID(announcement.getAID());
-            resannouncementDTO.setSubject(announcement.getSubject());
-            resannouncementDTO.setMessage(announcement.getMessage());
-            return ResponseEntity.ok(resannouncementDTO);
+            return ResponseEntity.ok(announcementService.createAnnouncement(announcementDTO));
         } catch (RuntimeException e) {
             return ResponseEntity.status(400).body("Failed to create announcement");
         }
@@ -41,10 +36,10 @@ public class AnnouncementController {
     }
 
 
-    @GetMapping("/{uid}")
-    public ResponseEntity<?> getAnnouncements(@PathVariable Integer uid) {
+    @GetMapping("/created_by/{uid}")
+    public ResponseEntity<?> getAnnouncementsByuID(@PathVariable Integer uid) {
         try {
-            return ResponseEntity.ok(announcementService.getAllSendAnnouncements(uid));
+            return ResponseEntity.ok(announcementService.getAllAnnouncementsByUID(uid));
         } catch (RuntimeException e) {
             return ResponseEntity.status(404).body("Announcements not found");
         }
@@ -65,6 +60,24 @@ public class AnnouncementController {
             return ResponseEntity.ok(announcementService.getAssignStudentsByaID(aid));
         } catch (RuntimeException e) {
             return ResponseEntity.status(404).body("Students not found");
+        }
+    }
+
+    @GetMapping("/assigned/announcement/student/{uid}")
+    public ResponseEntity<?> getAssignedAnnouncements(@PathVariable Integer uid) {
+        try {
+            return ResponseEntity.ok(announcementService.getAssignAnnouncementByUID(uid));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body("Announcements not found");
+        }
+    }
+
+    @GetMapping("/assigned/announcement/batch/{bID}")
+    public ResponseEntity<?> assignAnnouncement(@PathVariable Integer bID) {
+        try {
+            return ResponseEntity.ok(announcementService.getAssignAnnouncementBybID(bID));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body("Announcements not found");
         }
     }
 

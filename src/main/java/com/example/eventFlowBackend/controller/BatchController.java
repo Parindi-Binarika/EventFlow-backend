@@ -1,6 +1,7 @@
 package com.example.eventFlowBackend.controller;
 
 import com.example.eventFlowBackend.entity.Batch;
+import com.example.eventFlowBackend.payload.AttendanceDTO;
 import com.example.eventFlowBackend.payload.BatchDTO;
 import com.example.eventFlowBackend.service.BatchService;
 import org.springframework.http.ResponseEntity;
@@ -25,10 +26,10 @@ public class BatchController {
         }
     }
 
-    @PostMapping("/assign/{bID}/{uID}")
-    public ResponseEntity<?> assignUser(@PathVariable Long bID, @PathVariable Long uID) {
+    @PostMapping("/assign/{bID}")
+    public ResponseEntity<?> assignUser(@PathVariable Long bID, @RequestBody AttendanceDTO attendanceDTO) {
         try {
-            batchService.assignUser(bID, uID);
+            batchService.assignUser(bID, attendanceDTO);
             return ResponseEntity.status(200).body("User assigned to batch successfully");
         } catch (RuntimeException e) {
             System.out.println(e.getMessage());

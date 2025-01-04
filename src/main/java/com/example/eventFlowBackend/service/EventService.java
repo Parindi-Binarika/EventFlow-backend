@@ -1,14 +1,13 @@
 package com.example.eventFlowBackend.service;
 
 import com.example.eventFlowBackend.entity.*;
-import com.example.eventFlowBackend.payload.AnnouncementDTO;
-import com.example.eventFlowBackend.payload.EventAttendanceDTO;
-import com.example.eventFlowBackend.payload.EventDTO;
+import com.example.eventFlowBackend.payload.*;
 import com.example.eventFlowBackend.repository.*;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class EventService {
@@ -21,14 +20,18 @@ public class EventService {
     StudentEventRepository studentEventRepository;
 
     AnnouncementService announcementService;
+    BatchService batchService;
+    UserService userService;
 
-    public EventService(EventRepository eventRepository, UserRepository userRepository, AnnouncementRepository announcementRepository, StudentEventRepository studentEventRepository, StudentEventFeedbackRepository studentEventFeedbackRepository, AnnouncementService announcementService) {
+    public EventService(UserService userService,BatchService batchService,EventRepository eventRepository, UserRepository userRepository, AnnouncementRepository announcementRepository, StudentEventRepository studentEventRepository, StudentEventFeedbackRepository studentEventFeedbackRepository, AnnouncementService announcementService) {
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
         this.announcementRepository = announcementRepository;
         this.studentEventRepository = studentEventRepository;
         this.studentEventFeedbackRepository = studentEventFeedbackRepository;
         this.announcementService = announcementService;
+        this.batchService = batchService;
+        this.userService = userService;
     }
 
     public void create(EventDTO eventDTO, EventType eventType) {
@@ -59,11 +62,12 @@ public class EventService {
 
     public void assignAnnouncement(Integer eID, AnnouncementDTO announcementDTO) {
         try {
-            Announcement announcement = announcementService.createAnnouncement(announcementDTO);
+            AnnouncementDTO resannouncementDTO = announcementService.createAnnouncement(announcementDTO);
             Event event = eventRepository.findById(eID).orElseThrow(() -> new RuntimeException("Event not found"));
             if (event.getAnnouncement() != null) {
                 throw new RuntimeException("Announcement already assigned");
             }
+            Announcement announcement = announcementRepository.findById(resannouncementDTO.getAID()).orElseThrow(() -> new RuntimeException("Announcement not found"));
             event.setAnnouncement(announcement);
             eventRepository.save(event);
         } catch (Exception e) {
@@ -120,15 +124,39 @@ public class EventService {
         }
     }
 
-    public void markAttendance(Integer eID, Long uID) {
+    public void markAttendance(Integer eID, AttendanceDTO attendanceDTO) {
         try {
-            if (studentEventRepository.findByEvent_eIDAndUser_uID(eID, uID).isPresent()) {
-                throw new RuntimeException("Attendance already marked");
+            Event event = eventRepository.findById(eID).orElseThrow(() -> new RuntimeException("Event not found"));
+            if (event.getAnnouncement() == null) {
+                throw new RuntimeException("Can not make attendance for event without announcement");
             }
-            StudentEvent studentEvent = new StudentEvent();
-            studentEvent.setEvent(eventRepository.findById(eID).get());
-            studentEvent.setUser(userRepository.findById(uID).get());
-            studentEventRepository.save(studentEvent);
+            if (!studentEventRepository.existsByEvent_eID(eID)) {
+                List<UserDTO> userDTOS = new ArrayList<>();
+                List<AssignedBatchResponse> batchDTOS = announcementService.getAssignBatchesByaID(event.getAnnouncement().getAID());
+                List<AssignedStudentResponse> studentDTOS = announcementService.getAssignStudentsByaID(event.getAnnouncement().getAID());
+                batchDTOS.forEach(batchDTO -> {
+                    userDTOS.addAll(batchService.findUsersByBatch(Long.valueOf(batchDTO.getBID())));
+                });
+                studentDTOS.forEach(studentDTO -> {
+                    userDTOS.add(userService.findByID(Long.valueOf(studentDTO.getUID())));
+                });
+                userDTOS.forEach(userDTO -> {
+                    if (studentEventRepository.findByEvent_eIDAndUser_uID(eID, Long.valueOf(userDTO.getUID())).isEmpty()) {
+                        StudentEvent studentEvent = new StudentEvent();
+                        studentEvent.setEvent(event);
+                        studentEvent.setUser(userRepository.findById(Long.valueOf(userDTO.getUID())).get());
+                        studentEventRepository.save(studentEvent);
+                    }
+                });
+                System.out.println("Attendance marked for all students");
+            }
+            attendanceDTO.getStudents().forEach(uID -> {
+                if (studentEventRepository.findByEvent_eIDAndUser_uID(eID, uID).isPresent()) {
+                    StudentEvent studentEvent = studentEventRepository.findByEvent_eIDAndUser_uID(eID, uID).get();
+                    studentEvent.setAttended(true);
+                    studentEventRepository.save(studentEvent);
+                }
+            });
         } catch (Exception e) {
             throw new RuntimeException("Failed to mark attendance: " + e.getMessage());
         }
@@ -172,6 +200,7 @@ public class EventService {
                 eventAttendanceDTO.setSeID(studentEvent.getId());
                 eventAttendanceDTO.setUID(studentEvent.getUser().getUID().intValue());
                 eventAttendanceDTO.setEID(studentEvent.getEvent().getEID());
+                eventAttendanceDTO.setAttended(studentEvent.getAttended());
                 eventAttendanceDTO.setTitle(studentEvent.getEvent().getTitle());
                 eventAttendanceDTO.setDescription(studentEvent.getEvent().getDescription());
                 eventAttendanceDTO.setPoints(studentEvent.getPoints());
@@ -197,6 +226,7 @@ public class EventService {
                 eventAttendanceDTO.setSeID(studentEvent.getId());
                 eventAttendanceDTO.setUID(studentEvent.getUser().getUID().intValue());
                 eventAttendanceDTO.setEID(studentEvent.getEvent().getEID());
+                eventAttendanceDTO.setAttended(studentEvent.getAttended());
                 eventAttendanceDTO.setTitle(studentEvent.getEvent().getTitle());
                 eventAttendanceDTO.setDescription(studentEvent.getEvent().getDescription());
                 eventAttendanceDTO.setPoints(studentEvent.getPoints());
@@ -211,6 +241,18 @@ public class EventService {
             return eventAttendanceDTOs;
         } catch (Exception e) {
             throw new RuntimeException("Failed to get attendance");
+        }
+    }
+
+    public EventAttendanceAnalysisDTO getAttendanceAnalysis(Integer eID) {
+        try {
+            EventAttendanceAnalysisDTO eventAttendanceAnalysisDTO = new EventAttendanceAnalysisDTO();
+            eventAttendanceAnalysisDTO.setAllStudents(studentEventRepository.countAllByEvent_eID(eID));
+            eventAttendanceAnalysisDTO.setAttendedStudents(studentEventRepository.countAllByEvent_eIDAndAttended(eID,true));
+            eventAttendanceAnalysisDTO.setAbsentStudents(studentEventRepository.countAllByEvent_eIDAndAttended(eID,false));
+            return eventAttendanceAnalysisDTO;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to get attendance analysis");
         }
     }
 }

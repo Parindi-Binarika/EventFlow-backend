@@ -22,7 +22,7 @@ public class ProjectController {
             projectService.createProject(pid, projectDTO);
             return ResponseEntity.status(200).body("Project created successfully");
         } catch (RuntimeException e) {
-            return ResponseEntity.status(400).body("Failed to create project");
+            return ResponseEntity.status(400).body("Failed to create project: " + e.getMessage());
         }
     }
 
@@ -51,7 +51,7 @@ public class ProjectController {
         try {
             return ResponseEntity.status(200).body(projectService.getProjectsByPortfolio(pid));
         } catch (RuntimeException e) {
-            return ResponseEntity.status(400).body("Failed to get projects");
+            return ResponseEntity.status(400).body("Failed to get projects: " + e.getMessage());
         }
     }
 
