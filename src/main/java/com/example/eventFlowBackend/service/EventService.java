@@ -2,6 +2,7 @@ package com.example.eventFlowBackend.service;
 
 import com.example.eventFlowBackend.entity.*;
 import com.example.eventFlowBackend.payload.AnnouncementDTO;
+import com.example.eventFlowBackend.payload.AttendanceDTO;
 import com.example.eventFlowBackend.payload.EventAttendanceDTO;
 import com.example.eventFlowBackend.payload.EventDTO;
 import com.example.eventFlowBackend.repository.*;
@@ -121,15 +122,22 @@ public class EventService {
         }
     }
 
-    public void markAttendance(Integer eID, Long uID) {
+    public void markAttendance(Integer eID, AttendanceDTO attendanceDTO) {
         try {
-            if (studentEventRepository.findByEvent_eIDAndUser_uID(eID, uID).isPresent()) {
-                throw new RuntimeException("Attendance already marked");
-            }
-            StudentEvent studentEvent = new StudentEvent();
-            studentEvent.setEvent(eventRepository.findById(eID).get());
-            studentEvent.setUser(userRepository.findById(uID).get());
-            studentEventRepository.save(studentEvent);
+            Event event = eventRepository.findById(eID).orElseThrow(() -> new RuntimeException("Event not found"));
+            attendanceDTO.getStudents().forEach(uID -> {
+                if (studentEventRepository.findByEvent_eIDAndUser_uID(eID, uID).isPresent()) {
+                    return;
+                }
+                if (userRepository.findById(uID).isPresent()) {
+                    if (userRepository.findById(uID).get().getRole().equals(Role.student)) {
+                        StudentEvent studentEvent = new StudentEvent();
+                        studentEvent.setEvent(event);
+                        studentEvent.setUser(userRepository.findById(uID).get());
+                        studentEventRepository.save(studentEvent);
+                    }
+                }
+            });
         } catch (Exception e) {
             throw new RuntimeException("Failed to mark attendance: " + e.getMessage());
         }

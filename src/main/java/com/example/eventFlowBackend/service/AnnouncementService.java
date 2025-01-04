@@ -40,21 +40,25 @@ public class AnnouncementService {
             Announcement newAnnouncement = announcementRepository.save(announcement);
             if (announcementDTO.getBatches() != null) {
                 announcementDTO.getBatches().forEach(batchId -> {
-                    Batch batch = batchRepository.findById(Long.valueOf(batchId)).get();
                     AnnouncementBatch announcementBatch = new AnnouncementBatch();
                     announcementBatch.setAnnouncement(newAnnouncement);
-                    announcementBatch.setBatch(batch);
-                    announcementBatchRepository.save(announcementBatch);
+                    if (batchRepository.findById(Long.valueOf(batchId)).isPresent()) {
+                        Batch batch = batchRepository.findById(Long.valueOf(batchId)).get();
+                        announcementBatch.setBatch(batch);
+                        announcementBatchRepository.save(announcementBatch);
+                    }
                 });
             }
 
             if(announcementDTO.getStudents() != null) {
                 announcementDTO.getStudents().forEach(studentId -> {
-                    User user = userRepository.findById(Long.valueOf(studentId)).get();
                     AnnouncementStudent announcementStudent = new AnnouncementStudent();
                     announcementStudent.setAnnouncement(newAnnouncement);
-                    announcementStudent.setUser(user);
-                    announcementStudentRepository.save(announcementStudent);
+                    if (userRepository.findById(Long.valueOf(studentId)).isPresent()) {
+                        User user = userRepository.findById(Long.valueOf(studentId)).get();
+                        announcementStudent.setUser(user);
+                        announcementStudentRepository.save(announcementStudent);
+                    }
                 });
             }
 
