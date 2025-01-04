@@ -1,0 +1,3545 @@
+openapi: 3.0.0
+info:
+  title: API Documentation
+  version: 1.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/ANUSHIDESILVA28/EAD2/1.0.0
+  description: SwaggerHub API Auto Mocking
+paths:
+  /auth/login:
+    post:
+      tags:
+      - Authentication
+      summary: Login
+      description: Authenticate a user to get an authentication token.
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/auth_login_body'
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+        "401":
+          description: Unauthorized
+  /users:
+    get:
+      tags:
+      - User Management
+      summary: Get all users
+      description: Fetch all users in the system (Admin only).
+      operationId: getUsers
+      responses:
+        "200":
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/inline_response_200_1'
+  /create/admin:
+    post:
+      tags:
+      - User Management
+      summary: Create a new admin user
+      description: Allows the creation of a new admin user with the provided details.
+      operationId: createAdmin
+      requestBody:
+        description: Admin user details required to create a new admin account.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create_admin_body'
+        required: true
+      responses:
+        "200":
+          description: Admin user successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_2'
+        "400":
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+  /admin:
+    get:
+      tags:
+      - User Management
+      summary: Get all admin users
+      description: Fetch all admin users in the system.
+      operationId: getAdmins
+      responses:
+        "200":
+          description: List of admin users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/inline_response_200_3'
+        "400":
+          description: Admins not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400_1'
+  /create/students:
+    post:
+      tags:
+      - User Management
+      summary: Create a new student
+      description: Allows the creation of a new student with the provided details.
+      operationId: createStudent
+      requestBody:
+        description: Student details required to create a new student account.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create_students_body'
+        required: true
+      responses:
+        "200":
+          description: Student successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_4'
+        "400":
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+  /students:
+    get:
+      tags:
+      - User Management
+      summary: Get all students
+      description: Fetch all students in the system.
+      operationId: getStudents
+      responses:
+        "200":
+          description: List of students
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/inline_response_200_5'
+        "400":
+          description: Students not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400_2'
+  /create/lecturers:
+    post:
+      tags:
+      - User Management
+      summary: Create a new lecturer
+      description: Allows the creation of a new lecturer with the provided details.
+      operationId: createLecturer
+      requestBody:
+        description: Lecturer details required to create a new lecturer account.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create_lecturers_body'
+        required: true
+      responses:
+        "200":
+          description: Lecturer successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_6'
+        "400":
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400_3'
+  /lecturers:
+    get:
+      tags:
+      - User Management
+      summary: Get all lecturers
+      description: Fetch all lecturers in the system.
+      operationId: getLecturers
+      responses:
+        "200":
+          description: List of lecturers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/inline_response_200_5'
+        "400":
+          description: Lecturers not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400_4'
+  /search/{nic}:
+    get:
+      tags:
+      - User Management
+      summary: Search user by NIC
+      description: Fetch user details by NIC.
+      operationId: searchUserByNIC
+      parameters:
+      - name: nic
+        in: path
+        description: The NIC of the user to be searched.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: NIC12345
+      responses:
+        "400":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400_5'
+  /users/{id}:
+    get:
+      tags:
+      - User Management
+      summary: Get user by ID
+      description: Fetches the user information based on the provided user ID.
+      operationId: getUserById
+      parameters:
+      - name: id
+        in: path
+        description: The unique ID of the user to retrieve.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 1
+      responses:
+        "200":
+          description: User details fetched successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_7'
+        "400":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400_6'
+  /users/{uID}:
+    put:
+      tags:
+      - User Management
+      summary: Update user details
+      description: "Allows admin or the user themselves to update their profile information, including personal details and career portfolios."
+      operationId: updateUser
+      parameters:
+      - name: uID
+        in: path
+        description: The unique ID of the user to be updated.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/users_uID_body'
+      responses:
+        "200":
+          description: User not updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_8'
+        "400":
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400_7'
+    delete:
+      tags:
+      - User Management
+      summary: Delete a user by their unique ID
+      description: Allows the admin to delete a user based on their unique ID.
+      operationId: deleteUser
+      parameters:
+      - name: uID
+        in: path
+        description: The unique ID of the user to be deleted.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 1
+      responses:
+        "200":
+          description: User deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_9'
+        "400":
+          description: User not deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400_8'
+  /password/{uID}:
+    put:
+      tags:
+      - User Management
+      summary: Update the password of a user
+      description: Allows the admin to update the password of a user by their unique ID.
+      operationId: updatePassword
+      parameters:
+      - name: uID
+        in: path
+        description: The unique ID of the user whose password is being updated.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 1
+      requestBody:
+        description: New password details for the user.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/password_uID_body'
+        required: true
+      responses:
+        "200":
+          description: Password updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_10'
+        "400":
+          description: Password not updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400_9'
+  /batches:
+    get:
+      tags:
+      - Batch Management
+      summary: Get all batches
+      description: Retrieves a list of all available batches.
+      operationId: getAllBatches
+      responses:
+        "200":
+          description: Successfully retrieved the list of batches.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/inline_response_200_11'
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500'
+    post:
+      tags:
+      - Batch Management
+      summary: Create a new batch
+      description: Creates a new batch with the specified details.
+      operationId: createBatch
+      requestBody:
+        description: Provide the batch details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/batches_body'
+        required: true
+      responses:
+        "200":
+          description: Batch created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_12'
+        "400":
+          description: 'Invalid batch data provided. '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400_10'
+  /{id}:
+    delete:
+      tags:
+      - Batch Management
+      summary: Delete a resource by ID
+      description: Deletes a resource with the given ID.
+      operationId: deleteResourceById
+      parameters:
+      - name: id
+        in: path
+        description: ID of the resource to be deleted
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 123
+      responses:
+        "200":
+          description: Resource deleted successfully
+        "404":
+          description: Resource not found
+  /assign/{id}:
+    delete:
+      tags:
+      - Batch Management
+      summary: Unassign  user from a resource by ID
+      description: Unassigns a user from a resource using the provided ID.
+      operationId: unassignUserById
+      parameters:
+      - name: id
+        in: path
+        description: ID of the user or resource to unassign
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 123
+      responses:
+        "200":
+          description: ' '
+        "404":
+          description: ' '
+  /assign/{bID}/{uID}:
+    post:
+      tags:
+      - Batch Management
+      summary: Associate a user to a batch
+      description: Associates the batch with the user by using the specified batch ID and user ID.
+      operationId: associateBatchWithUser
+      parameters:
+      - name: bID
+        in: path
+        description: The ID of the batch
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 101
+      - name: uID
+        in: path
+        description: The ID of the user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 1
+      responses:
+        "200":
+          description: Batch successfully associated with the user
+        "400":
+          description: Invalid input or batch/user not found
+  /allBatches/{uID}:
+    get:
+      tags:
+      - Batch Management
+      summary: Get all batches for a specific user
+      description: Fetch all batches associated with the user specified by the user ID.
+      operationId: getAllBatchesForUser
+      parameters:
+      - name: uID
+        in: path
+        description: The ID of the user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 1
+      responses:
+        "200":
+          description: Successfully retrieved the batches for the user.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/inline_response_200_13'
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400_6'
+  /allStudents/{bID}:
+    get:
+      tags:
+      - Batch Management
+      summary: Get all students in a specific batch
+      description: Fetch all students associated with the batch specified by the batch ID.
+      operationId: getAllStudentsForBatch
+      parameters:
+      - name: bID
+        in: path
+        description: The ID of the batch
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 101
+      responses:
+        "404":
+          description: Batch not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404'
+  /batches/{id}:
+    get:
+      tags:
+      - Batch Management
+      summary: Get batch by ID
+      description: Fetches the batch details based on the provided batch ID.
+      operationId: getBatchById
+      parameters:
+      - name: id
+        in: path
+        description: The unique ID of the batch to retrieve.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 101
+      responses:
+        "200":
+          description: Batch details fetched successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_11'
+        "404":
+          description: Batch not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404_1'
+  /batches/{bID}:
+    put:
+      tags:
+      - Batch Management
+      summary: Update batch details
+      description: Allows the admin to update the details of a specific batch using its bID.
+      operationId: updateBatch
+      parameters:
+      - name: bID
+        in: path
+        description: The ID of the batch to update.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/batches_bID_body'
+      responses:
+        "404":
+          description: Batch not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404'
+  /interview:
+    get:
+      tags:
+      - Event Management
+      summary: Retrieve all interviews
+      description: Fetches a list of all interviews with their details.
+      operationId: getInterviews
+      responses:
+        "200":
+          description: A list of interviews
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/inline_response_200_14'
+        "404":
+          description: No interviews found
+    post:
+      tags:
+      - Event Management
+      summary: Create a new interview event
+      description: Creates a new interview event with the specified details.
+      operationId: createInterviewEvent
+      requestBody:
+        description: Details for creating the new interview event.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/interview_body'
+        required: true
+      responses:
+        "200":
+          description: Interview event successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_15'
+        "400":
+          description: Invalid input data provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400_11'
+  /workshop:
+    get:
+      tags:
+      - Event Management
+      summary: Retrieve all workshops
+      description: Fetches a list of all workshops with their details.
+      operationId: getWorkshops
+      responses:
+        "200":
+          description: A list of workshops
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/inline_response_200_16'
+        "404":
+          description: No workshops found
+    post:
+      tags:
+      - Event Management
+      summary: Create a new workshop event
+      description: Creates a new workshop event with the specified details.
+      operationId: createWorkshopEvent
+      requestBody:
+        description: Details for creating the new workshop event.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/workshop_body'
+        required: true
+      responses:
+        "200":
+          description: Workshop event successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_17'
+        "400":
+          description: Invalid input data provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400_11'
+  /attendance/{eID}/{uID}:
+    post:
+      tags:
+      - Event Management
+      summary: Record attendance for an event
+      description: "Records a student's attendance for a specific event, along with optional points."
+      operationId: recordAttendance
+      parameters:
+      - name: eID
+        in: path
+        description: The ID of the event
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 101
+      - name: uID
+        in: path
+        description: The ID of the student
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 1
+      requestBody:
+        description: Optional data to include points for the attendance record.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/eID_uID_body'
+        required: false
+      responses:
+        "200":
+          description: Attendance successfully recorded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_18'
+        "400":
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400_11'
+  /event/{eID}:
+    get:
+      tags:
+      - Event Management
+      summary: Retrieve a specific event by its ID
+      description: Fetches the details of a specific event using its unique ID.
+      operationId: getEventById
+      parameters:
+      - name: eID
+        in: path
+        description: The unique ID of the event to retrieve
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 1
+      responses:
+        "200":
+          description: Details of the event
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_19'
+        "404":
+          description: Event not found
+    put:
+      tags:
+      - Event Management
+      summary: Update an event
+      description: Updates the details of an existing event identified by its unique event ID.
+      operationId: updateEvent
+      parameters:
+      - name: eID
+        in: path
+        description: The unique ID of the event to be updated
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 1
+      requestBody:
+        description: Updated event details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/event_eID_body'
+        required: true
+      responses:
+        "200":
+          description: Event updated successfully
+        "400":
+          description: Invalid event details provided
+        "404":
+          description: Event not found
+        "500":
+          description: Internal server error
+    delete:
+      tags:
+      - Event Management
+      summary: Delete an event
+      description: Allows the deletion of an event identified by `eID`.
+      operationId: deleteEvent
+      parameters:
+      - name: eID
+        in: path
+        description: The unique ID of the event to be deleted
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 101
+      responses:
+        "200":
+          description: Event successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_20'
+        "400":
+          description: Invalid event ID or event not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400_12'
+  /attendance/event/{eID}:
+    get:
+      tags:
+      - Event Management
+      summary: Retrieve attendance for a specific event
+      description: Fetches attendance details for the specified event ID.
+      operationId: getAttendanceByEventId
+      parameters:
+      - name: eID
+        in: path
+        description: The unique ID of the event to retrieve attendance for
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 1
+      responses:
+        "200":
+          description: Attendance details for the event
+        "404":
+          description: Event or attendance records not found
+  /attendance/user/{eID}:
+    get:
+      tags:
+      - Event Management
+      summary: Retrieve attendance for a user in a specific event
+      description: Fetches attendance details for a user in the specified event.
+      operationId: getUserAttendanceByEventId
+      parameters:
+      - name: eID
+        in: path
+        description: The unique ID of the event to retrieve user attendance for
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 1
+      responses:
+        "200":
+          description: User attendance details for the event
+        "404":
+          description: Event or user attendance records not found
+  /assign/{eID}/{aID}:
+    put:
+      tags:
+      - Event Management
+      summary: Assign an announcement to an event
+      description: Assigns an announcement (identified by `aID`) to an event (identified by `eID`).
+      operationId: assignAnnouncementToEvent
+      parameters:
+      - name: eID
+        in: path
+        description: The unique ID of the event to which the announcement will be assigned
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 1
+      - name: aID
+        in: path
+        description: The unique ID of the announcement to be assigned
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 101
+      responses:
+        "200":
+          description: Announcement successfully assigned to the event
+        "400":
+          description: Invalid event or announcement data provided
+        "404":
+          description: Event or announcement not found
+        "500":
+          description: Internal server error
+  /unassign/{eID}:
+    put:
+      tags:
+      - Event Management
+      summary: Unassign an announcement from an event
+      description: Unassigns an announcement from the specified event (identified by `eID`).
+      operationId: unassignAnnouncementFromEvent
+      parameters:
+      - name: eID
+        in: path
+        description: The unique ID of the event from which the announcement will be unassigned
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 1
+      responses:
+        "200":
+          description: Announcement successfully unassigned from the event
+        "400":
+          description: Invalid event data provided
+        "404":
+          description: Event not found
+        "500":
+          description: Internal server error
+  /attendance/{seID}/{aID}:
+    put:
+      tags:
+      - Event Management
+      summary: Update attendance for a student in a specific event
+      description: Allows updating the attendance status of a student identified by `seID` in the event specified by `aID`.
+      operationId: updateAttendance
+      parameters:
+      - name: seID
+        in: path
+        description: The unique ID of the student-event participation
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 1
+      - name: aID
+        in: path
+        description: The unique ID of the attendance record
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 101
+      requestBody:
+        description: Updated attendance details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/seID_aID_body'
+        required: true
+      responses:
+        "200":
+          description: Attendance successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_21'
+        "400":
+          description: Invalid attendance data or attendance not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400_13'
+  /event/attendance/{seID}:
+    delete:
+      tags:
+      - Event Management
+      summary: Delete student attendance for an event
+      description: Removes the attendance record of a student identified by `seID` for a specific event.
+      operationId: deleteAttendance
+      parameters:
+      - name: seID
+        in: path
+        description: The unique ID of the student event attendance record to be deleted
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 123
+      responses:
+        "200":
+          description: Attendance successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_22'
+        "400":
+          description: Invalid attendance ID or record not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400_14'
+  /portfolio/:
+    post:
+      tags:
+      - Portfolio Management
+      summary: Create a new portfolio
+      description: Creates a new portfolio with the specified details and user ID.
+      operationId: createPortfolio
+      requestBody:
+        description: Provide the portfolio details and user ID to create the portfolio.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/portfolio_body'
+        required: true
+      responses:
+        "201":
+          description: Portfolio created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_201'
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400_15'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500_1'
+  /portfolio/{uID}:
+    get:
+      tags:
+      - Portfolio Management
+      summary: Retrieve a portfolio by user ID
+      description: Fetches the portfolio details for the specified user ID.
+      operationId: getPortfolioByUserId
+      parameters:
+      - name: uID
+        in: path
+        description: The user ID for which the portfolio is to be fetched
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 1
+      responses:
+        "200":
+          description: Portfolio details successfully fetched
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_23'
+        "404":
+          description: Portfolio not found for the given user ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404_2'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500_2'
+    delete:
+      tags:
+      - Portfolio Management
+      summary: Delete a user's portfolio
+      description: Allows a user to delete their portfolio permanently.
+      operationId: deleteUserPortfolio
+      parameters:
+      - name: uID
+        in: path
+        description: The unique ID of the user whose portfolio is to be deleted.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 1
+      responses:
+        "200":
+          description: Portfolio successfully deleted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_24'
+        "400":
+          description: Invalid input or portfolio ID does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400_16'
+        "404":
+          description: Portfolio not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404_3'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500_3'
+  /portfolio/{pID}:
+    put:
+      tags:
+      - Portfolio Management
+      summary: Update portfolio by portfolio ID
+      description: Updates the portfolio details for the specified portfolio ID. The user ID is required in the request body.
+      operationId: updatePortfolio
+      parameters:
+      - name: pID
+        in: path
+        description: The portfolio ID to be updated
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 101
+      requestBody:
+        description: Provide the portfolio details and user ID to update the portfolio.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/portfolio_pID_body'
+        required: true
+      responses:
+        "200":
+          description: Portfolio successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_25'
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400_15'
+        "404":
+          description: Portfolio not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404_4'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500_4'
+  /portfolio/{pID}/public:
+    put:
+      tags:
+      - Portfolio Management
+      summary: Update the visibility of a portfolio
+      description: Allows a user to toggle the public status of their portfolio (public/private).
+      operationId: updatePortfolioPublicStatus
+      parameters:
+      - name: pID
+        in: path
+        description: The unique ID of the portfolio whose visibility is being updated.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 101
+      responses:
+        "200":
+          description: Portfolio visibility successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_26'
+        "400":
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400_17'
+        "404":
+          description: Portfolio not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404_5'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500_5'
+  /portfolio/{pID}/onlyme:
+    put:
+      tags:
+      - Portfolio Management
+      summary: Set portfolio visibility to 'Only Me'
+      description: Allows a user to set their portfolio to 'Only Me' (private to the user only).
+      operationId: setPortfolioVisibilityOnlyMe
+      parameters:
+      - name: pID
+        in: path
+        description: The unique ID of the portfolio whose visibility is being updated.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 101
+      responses:
+        "200":
+          description: Portfolio visibility successfully set to 'Only Me'.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_27'
+        "400":
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400_17'
+        "404":
+          description: Portfolio not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404_5'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500_6'
+  /project:
+    put:
+      tags:
+      - Project Management
+      summary: Update an existing project
+      description: Allows a user to update the details of an existing project.
+      operationId: updateProject
+      requestBody:
+        description: Provide the updated project details.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/project_body'
+        required: true
+      responses:
+        "200":
+          description: Project updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_28'
+        "400":
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400_18'
+        "404":
+          description: Project not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404_6'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500_7'
+    post:
+      tags:
+      - Project Management
+      summary: Create a new project
+      description: Allows a user to create a new project and associate it with a specific portfolio.
+      operationId: createProject
+      requestBody:
+        description: Provide the details of the project to be created.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/project_body_1'
+        required: true
+      responses:
+        "201":
+          description: Project created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_201_1'
+        "400":
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400_18'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500_8'
+  /project/{pID}:
+    get:
+      tags:
+      - Project Management
+      summary: Get details of a specific project
+      description: Fetches the details of a project based on the provided project ID.
+      operationId: getProjectDetails
+      parameters:
+      - name: pID
+        in: path
+        description: The unique ID of the project to retrieve details for.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 101
+      responses:
+        "200":
+          description: Successfully retrieved project details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_29'
+        "404":
+          description: Project not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404_7'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500_9'
+  /projects/{proID}:
+    delete:
+      tags:
+      - Project Management
+      summary: Delete a project
+      description: Allows a user to delete a specific project by its unique ID.
+      operationId: deleteProject
+      parameters:
+      - name: proID
+        in: path
+        description: The unique ID of the project to be deleted.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 101
+      responses:
+        "200":
+          description: Project successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_30'
+        "400":
+          description: Invalid project ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400_19'
+        "404":
+          description: Project not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404_6'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500_10'
+  /event/participate:
+    post:
+      tags:
+      - Event Participation
+      summary: Participate in an event
+      description: Allows a student to register their participation in a specific event.
+      operationId: participateInEvent
+      requestBody:
+        description: Provide the student and event details for participation.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/event_participate_body'
+        required: true
+      responses:
+        "201":
+          description: Participation successfully recorded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_201_2'
+        "400":
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400_20'
+        "404":
+          description: Event or student not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404_8'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500_11'
+  /event/participate/{eID}:
+    get:
+      tags:
+      - Event Participation
+      summary: Get participants of an event
+      description: "Fetch the list of participants for a specific event, including their user IDs and participation details."
+      operationId: getEventParticipants
+      parameters:
+      - name: eID
+        in: path
+        description: The unique ID of the event whose participants are to be retrieved.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 101
+      responses:
+        "200":
+          description: List of participants retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/inline_response_200_31'
+        "404":
+          description: Event not found or no participants for the event
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404_9'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500_12'
+  /event/participate/{uID}:
+    get:
+      tags:
+      - Event Participation
+      summary: Get events participated by a user
+      description: "Fetch the list of events a specific user has participated in, including event details and points awarded."
+      operationId: getUserParticipationDetails
+      parameters:
+      - name: uID
+        in: path
+        description: The unique ID of the user whose participation details are to be retrieved.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 10
+      responses:
+        "200":
+          description: User participation details retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/inline_response_200_32'
+        "404":
+          description: User not found or no participation records available
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404_10'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500_13'
+  /event/participate/{seID}:
+    delete:
+      tags:
+      - Event Participation
+      summary: Delete a specific event participation record
+      description: Removes a specific participation record from the student_events table by its unique ID (seID).
+      operationId: deleteEventParticipation
+      parameters:
+      - name: seID
+        in: path
+        description: The unique ID of the participation record to be deleted.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 123
+      responses:
+        "200":
+          description: Participation record successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_33'
+        "404":
+          description: Participation record not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404_11'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500_14'
+  /announcement:
+    post:
+      tags:
+      - Announcement Management
+      summary: Create a new announcement
+      description: "Allows users to create a new announcement with a subject, message, scheduled date and time, and other details."
+      operationId: createAnnouncement
+      requestBody:
+        description: Provide announcement details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/announcement_body'
+        required: true
+      responses:
+        "201":
+          description: Announcement successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_201_3'
+        "400":
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400_21'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500_15'
+  /announcement/{aID}:
+    get:
+      tags:
+      - Announcement Management
+      summary: Retrieve a specific announcement by ID
+      description: Fetch the details of an announcement using its unique announcement ID (aID).
+      operationId: getAnnouncementByID
+      parameters:
+      - name: aID
+        in: path
+        description: The unique ID of the announcement to be retrieved.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 1
+      responses:
+        "200":
+          description: Announcement details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_34'
+        "404":
+          description: Announcement not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404_12'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500_16'
+  /announcement/assignto/{bID}:
+    get:
+      tags:
+      - Announcement Management
+      summary: Retrieve announcements assigned to a specific batch
+      description: Fetch all announcements assigned to the specified batch ID.
+      operationId: getAnnouncementsByBatchID
+      parameters:
+      - name: bID
+        in: path
+        description: The unique ID of the batch to which announcements are assigned.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 1
+      responses:
+        "200":
+          description: List of announcements assigned to the batch
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/inline_response_200_35'
+        "404":
+          description: No announcements found for the provided batch ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404_13'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500_17'
+  /announcement/batches:
+    post:
+      tags:
+      - Announcement Management
+      summary: Assign an announcement to a batch
+      description: Allows assigning an announcement to a specific batch by providing the announcement ID and batch ID.
+      operationId: assignAnnouncementToBatch
+      requestBody:
+        description: Provide the announcement ID and batch ID to assign the announcement to the batch.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/announcement_batches_body'
+        required: true
+      responses:
+        "201":
+          description: Announcement successfully assigned to the batch
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_201_4'
+        "400":
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400_22'
+        "404":
+          description: Announcement or batch not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404_14'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500_18'
+  /announcement/{abID}:
+    put:
+      tags:
+      - Announcement Management
+      summary: Update the assignment of an announcement to a batch
+      description: Allows updating the assignment details of an announcement to a batch by providing the assignment ID (abID) and new details.
+      operationId: updateAnnouncementBatchAssignment
+      parameters:
+      - name: abID
+        in: path
+        description: The unique ID of the announcement-batch assignment to be updated.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 1
+      requestBody:
+        description: Provide the updated assignment details.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/announcement_abID_body'
+        required: true
+      responses:
+        "200":
+          description: Announcement-batch assignment updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_36'
+        "400":
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400_23'
+        "404":
+          description: Announcement-batch assignment not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404_15'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500_19'
+    delete:
+      tags:
+      - Announcement Management
+      summary: Delete an announcement batch by its ID
+      description: Deletes the announcement batch entry associated with the given abID.
+      operationId: deleteAnnouncementBatchById
+      parameters:
+      - name: abID
+        in: path
+        description: The unique ID of the announcement batch to delete.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 1
+      responses:
+        "200":
+          description: Announcement batch deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_37'
+        "404":
+          description: Announcement batch not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404_16'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500_20'
+  /feedbacks:
+    post:
+      tags:
+      - Feedback Management
+      summary: Create a new feedback
+      description: "Creates a new feedback entry with the specified description, type, and creator details."
+      operationId: createFeedback
+      requestBody:
+        description: Provide the feedback details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/feedbacks_body'
+        required: true
+      responses:
+        "201":
+          description: Feedback created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_201_5'
+        "400":
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400_24'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500_21'
+  /feedbacks/{fID}:
+    put:
+      tags:
+      - Feedback Management
+      summary: Update an existing feedback
+      description: "Allows updating the details of an existing feedback entry, including description and type."
+      operationId: updateFeedback
+      parameters:
+      - name: fID
+        in: path
+        description: The unique ID of the feedback to be updated
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 101
+      requestBody:
+        description: Provide the updated feedback details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/feedbacks_fID_body'
+        required: true
+      responses:
+        "200":
+          description: Feedback updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_38'
+        "400":
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400_24'
+        "404":
+          description: Feedback not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404_17'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500_22'
+  /feedbacks/assign/{seID}/{fID}:
+    post:
+      tags:
+      - Feedback Management
+      summary: Assign a feedback to a student event
+      description: Assigns a specific feedback (fID) to a student event (seID).
+      operationId: assignFeedbackToEvent
+      parameters:
+      - name: seID
+        in: path
+        description: The unique ID of the student event to which the feedback is being assigned.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 101
+      - name: fID
+        in: path
+        description: The unique ID of the feedback being assigned.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 202
+      responses:
+        "200":
+          description: Feedback successfully assigned to the student event
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_39'
+        "400":
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400_25'
+        "404":
+          description: Student event or feedback not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404_18'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500_23'
+  /feedbacks/assign/delete/{ID}:
+    post:
+      tags:
+      - Feedback Management
+      summary: Remove a feedback assignment from a student event
+      description: Removes the feedback assignment (ID) from the student event.
+      operationId: removeFeedbackAssignment
+      parameters:
+      - name: ID
+        in: path
+        description: The unique ID of the feedback assignment to be removed.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 101
+      responses:
+        "200":
+          description: Feedback assignment successfully removed from the student event
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_40'
+        "400":
+          description: Invalid assignment ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400_26'
+        "404":
+          description: Feedback assignment not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404_19'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500_24'
+  /suggestions:
+    post:
+      tags:
+      - suggestions
+      summary: Create a new suggestion
+      operationId: createSuggestion
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/suggestions_body'
+        required: true
+      responses:
+        "201":
+          description: Suggestion created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_201_6'
+  /suggestions/active:
+    get:
+      tags:
+      - suggestions
+      summary: Get all active suggestions
+      operationId: getActiveSuggestions
+      responses:
+        "200":
+          description: A list of active suggestions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/inline_response_201_6'
+  /suggestions/past:
+    get:
+      tags:
+      - suggestions
+      summary: Get all past (expired) suggestions
+      operationId: getPastSuggestions
+      responses:
+        "200":
+          description: A list of past suggestions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/inline_response_201_6'
+  /suggestions/{suID}/vote/{uID}:
+    post:
+      tags:
+      - suggestions
+      summary: Student votes for a suggestion
+      operationId: voteOnSuggestion
+      parameters:
+      - name: suID
+        in: path
+        description: The ID of the suggestion
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      - name: uID
+        in: path
+        description: The ID of the student
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Vote registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_41'
+  /suggestions/student/vote/{uID}/active:
+    get:
+      tags:
+      - suggestions
+      summary: Get all active suggestions voted by a student
+      operationId: getActiveSuggestionsVotedByStudent
+      parameters:
+      - name: uID
+        in: path
+        description: The ID of the student
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: A list of active suggestions voted by the student
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/inline_response_201_6'
+  /suggestions/student/vote/{uID}/past:
+    get:
+      tags:
+      - suggestions
+      summary: Get all past suggestions voted by a student
+      operationId: getPastSuggestionsVotedByStudent
+      parameters:
+      - name: uID
+        in: path
+        description: The ID of the student
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: A list of past suggestions voted by the student
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/inline_response_201_6'
+components:
+  schemas:
+    auth_login_body:
+      type: object
+      properties:
+        email:
+          type: string
+          example: john.doe@example.com
+        password:
+          type: string
+          example: hashedpassword
+    inline_response_200:
+      type: object
+      properties:
+        token:
+          type: string
+          example: jwt-token
+    inline_response_200_1:
+      type: object
+      properties:
+        uID:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: John Doe
+        email:
+          type: string
+          example: john.doe@example.com
+        mobile:
+          type: string
+          example: "1234567890"
+        nic:
+          type: string
+          example: 123456789V
+        password:
+          type: string
+          description: The user's password. Should be null for security reasons.
+          nullable: true
+        role:
+          type: string
+          example: student
+        is_active:
+          type: boolean
+          description: Indicates whether the lecturer is active. Can be null.
+          nullable: true
+          example: true
+    create_admin_body:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Full name of the admin
+          example: John Doe
+        email:
+          type: string
+          description: Email address of the admin
+          format: email
+          example: admin@example.com
+        mobile:
+          type: string
+          description: Mobile number of the admin
+          example: "1234567890"
+        nic:
+          type: string
+          description: National ID or unique identification for the admin
+          example: NIC12345
+        password:
+          type: string
+          description: Password for the admin account
+          format: password
+          example: password123
+        createdBy:
+          type: string
+          description: User ID of the admin who is creating this account
+          example: "1"
+    inline_response_200_2:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Admin user created successfully.
+        adminId:
+          type: integer
+          example: 101
+    inline_response_400:
+      type: object
+      properties:
+        message:
+          type: string
+          example: User not created.
+    inline_response_200_3:
+      type: object
+      properties:
+        name:
+          type: string
+          example: John Doe
+        email:
+          type: string
+          example: admin@example.com
+        mobile:
+          type: string
+          example: "1234567890"
+        nic:
+          type: string
+          example: NIC12345
+        password:
+          type: string
+          nullable: true
+        is_active:
+          type: boolean
+          nullable: true
+    inline_response_400_1:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Admins not found.
+    create_students_body:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Full name of the student
+          example: Jane Doe
+        email:
+          type: string
+          description: Email address of the student
+          format: email
+          example: student@example.com
+        mobile:
+          type: string
+          description: Mobile number of the student
+          example: "9876543210"
+        password:
+          type: string
+          description: Password for the student account
+          format: password
+          example: password123
+        createdBy:
+          type: string
+          description: User ID of the admin or staff creating this student account
+          example: "1"
+    inline_response_200_4:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Student created successfully.
+        studentId:
+          type: integer
+          example: 101
+    inline_response_200_5:
+      type: object
+      properties:
+        name:
+          type: string
+          example: John Doe
+        email:
+          type: string
+          example: john.doe@example.com
+        mobile:
+          type: string
+          example: "1234567890"
+        nic:
+          type: string
+          example: NIC12345
+        password:
+          type: string
+          nullable: true
+        is_active:
+          type: boolean
+          nullable: true
+    inline_response_400_2:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Students not found.
+    create_lecturers_body:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Full name of the lecturer
+          example: Jane Smith
+        email:
+          type: string
+          description: Email address of the lecturer
+          format: email
+          example: lecturer@example.com
+        mobile:
+          type: string
+          description: Mobile number of the lecturer
+          example: "9876543210"
+        nic:
+          type: string
+          description: National ID or unique identification for the lecturer
+          example: NIC67890
+        password:
+          type: string
+          description: Password for the lecturer account
+          format: password
+          example: password123
+        createdBy:
+          type: string
+          description: User ID of the admin who is creating this account
+          example: "1"
+    inline_response_200_6:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Lecturer created successfully.
+        lecturerId:
+          type: integer
+          example: 201
+    inline_response_400_3:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Lecturer not created.
+    inline_response_400_4:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Lecturers not found.
+    inline_response_400_5:
+      type: object
+      properties:
+        message:
+          type: string
+          example: User not found.
+    inline_response_200_7:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: John Doe
+        email:
+          type: string
+          example: john.doe@example.com
+        mobile:
+          type: string
+          example: "1234567890"
+    inline_response_400_6:
+      type: object
+      properties:
+        message:
+          type: string
+          example: User not found
+    users_uID_body:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Full name of the user
+          example: John Doe
+        email:
+          type: string
+          description: User's email address
+          example: john.doe@example.com
+        mobile:
+          type: string
+          description: User's mobile number
+          example: "1234567890"
+        nic:
+          type: string
+          description: National ID or equivalent
+          example: ABC1234567
+    inline_response_200_8:
+      type: object
+      properties:
+        message:
+          type: string
+          example: User updated successfully
+    inline_response_400_7:
+      type: object
+      properties:
+        message:
+          type: string
+          example: User not updated
+    inline_response_200_9:
+      type: object
+      properties:
+        message:
+          type: string
+          example: User deleted successfully.
+    inline_response_400_8:
+      type: object
+      properties:
+        message:
+          type: string
+          example: User not deleted.
+    password_uID_body:
+      type: object
+      properties:
+        password:
+          type: string
+          description: The new password for the user.
+          example: newpassword123
+    inline_response_200_10:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Password updated successfully.
+    inline_response_400_9:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Password not updated.
+    inline_response_200_11:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 101
+        name:
+          type: string
+          example: Batch A
+        description:
+          type: string
+          example: This is a description of Batch A.
+        createdAt:
+          type: string
+          format: date-time
+    inline_response_500:
+      type: object
+      properties:
+        message:
+          type: string
+          example: An error occurred while fetching batches.
+    batches_body:
+      type: object
+      properties:
+        batchName:
+          type: string
+          description: Name of the batch
+          example: Batch A
+        commonEmail:
+          type: string
+          description: Common email address associated with the batch
+          example: batchA@example.com
+        createdBy:
+          type: string
+          description: User ID of the admin who is creating this account
+          example: "1"
+    inline_response_200_12:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Batch created successfully.
+        batchID:
+          type: integer
+          description: Unique ID of the created batch
+          example: 101
+    inline_response_400_10:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Invalid batch data provided.
+    inline_response_200_13:
+      type: object
+      properties:
+        batchId:
+          type: integer
+          example: 101
+        batchName:
+          type: string
+          example: Batch A
+        commonEmail:
+          type: string
+          example: batch-a@example.com
+    inline_response_404:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Batch not found.
+    inline_response_404_1:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Batch not found
+    batches_bID_body:
+      type: object
+      properties:
+        batch_name:
+          type: string
+          example: Batch A
+        start_date:
+          type: string
+          format: date
+          example: 2024-01-01
+        end_date:
+          type: string
+          format: date
+          example: 2024-12-31
+        status:
+          type: string
+          example: active
+          enum:
+          - active
+          - inactive
+    inline_response_200_14:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Title of the interview
+          example: interview 1
+        description:
+          type: string
+          description: Description of the interview
+          example: best interview
+        startDateTime:
+          type: string
+          description: Scheduled start date and time of the interview
+          format: date-time
+        createdBy:
+          type: integer
+          description: User ID of the creator of the interview
+          example: 4
+    interview_body:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Title of the interview
+          example: interview 1
+        description:
+          type: string
+          description: Description of the interview
+          example: best interview
+        startDateTime:
+          type: string
+          description: Scheduled start date and time of the interview
+          format: date-time
+        createdBy:
+          type: integer
+          description: ID of the user who created the event
+          example: 4
+    inline_response_200_15:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Interview event created successfully.
+        eventId:
+          type: integer
+          example: 101
+    inline_response_400_11:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Invalid input data provided.
+    inline_response_200_16:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Title of the workshop
+          example: interview 1
+        description:
+          type: string
+          description: Description of the workshop
+          example: best interview
+        startDateTime:
+          type: string
+          description: Scheduled start date and time of the workshop
+          format: date-time
+        createdBy:
+          type: integer
+          description: User ID of the creator of the workshop
+          example: 4
+    workshop_body:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Title of the workshop
+          example: Workshop on Web Development
+        description:
+          type: string
+          description: Description of the workshop
+          example: Learn the basics of web development in this hands-on workshop.
+        startDateTime:
+          type: string
+          description: Scheduled start date and time of the workshop
+          format: date-time
+        createdBy:
+          type: integer
+          description: ID of the user who created the event
+          example: 4
+    inline_response_200_17:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Workshop event created successfully.
+        eventId:
+          type: integer
+          example: 202
+    eID_uID_body:
+      type: object
+      properties:
+        point:
+          type: integer
+          description: Points awarded for the event attendance
+          example: 10
+    inline_response_200_18:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Attendance recorded successfully.
+    inline_response_200_19:
+      type: object
+      properties:
+        eID:
+          type: integer
+          description: Event ID
+          example: 1
+        title:
+          type: string
+          description: Event title
+          example: Tech Workshop
+        description:
+          type: string
+          description: Event description
+          example: An interactive tech workshop on modern development tools.
+        scheduled_datetime:
+          type: string
+          description: Scheduled date and time of the event
+          format: date-time
+        is_active:
+          type: boolean
+          description: Indicates if the event is active
+          example: true
+        createdBy:
+          type: integer
+          description: ID of the user who created the event
+          example: 4
+        announcement_id:
+          type: integer
+          description: Related announcement ID (if applicable)
+          example: 101
+    event_eID_body:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Title of the event
+          example: Updated Event Title
+        description:
+          type: string
+          description: Description of the event
+          example: Updated description of the event.
+        scheduled_datetime:
+          type: string
+          description: Scheduled date and time of the event
+          format: date-time
+        is_active:
+          type: boolean
+          description: Event status (active/inactive)
+          example: true
+    inline_response_200_20:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Event deleted successfully.
+    inline_response_400_12:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Invalid event ID or event not found.
+    seID_aID_body:
+      type: object
+      properties:
+        point:
+          type: integer
+          description: Points awarded to the student for attending the event
+          example: 10
+        date:
+          type: string
+          description: The date and time of attendance
+          format: date-time
+    inline_response_200_21:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Attendance updated successfully.
+    inline_response_400_13:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Invalid attendance data or attendance not found.
+    inline_response_200_22:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Attendance deleted successfully.
+    inline_response_400_14:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Invalid attendance ID or record not found.
+    portfolio_body:
+      type: object
+      properties:
+        uID:
+          type: integer
+          description: The user ID associated with the portfolio
+          example: 1
+        pID:
+          type: integer
+          description: The portfolio ID
+          example: 101
+        displayName:
+          type: string
+          description: Display name of the portfolio
+          example: John Doe Portfolio
+        description:
+          type: string
+          description: Description of the portfolio
+          example: This portfolio showcases my work in web development.
+        technologies:
+          type: string
+          description: Technologies used in the portfolio
+          example: "HTML, CSS, JavaScript, React"
+        github:
+          type: string
+          description: GitHub profile URL
+          example: https://github.com/johndoe
+        linkedin:
+          type: string
+          description: LinkedIn profile URL
+          example: https://www.linkedin.com/in/johndoe
+        is_active:
+          type: boolean
+          description: Status indicating whether the portfolio is active
+          example: true
+    inline_response_201:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Portfolio created successfully.
+        portfolioID:
+          type: integer
+          description: Unique ID of the created portfolio
+          example: 101
+    inline_response_400_15:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Invalid portfolio data provided.
+    inline_response_500_1:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Error creating portfolio.
+    inline_response_200_23:
+      type: object
+      properties:
+        pID:
+          type: integer
+          description: Portfolio ID
+          example: 101
+        displayName:
+          type: string
+          description: Display name of the portfolio
+          example: John Doe Portfolio
+        description:
+          type: string
+          description: Description of the portfolio
+          example: This portfolio showcases my work in web development.
+        technologies:
+          type: string
+          description: Technologies used in the portfolio
+          example: "HTML, CSS, JavaScript, React"
+        github:
+          type: string
+          description: GitHub profile URL
+          example: https://github.com/johndoe
+        linkedin:
+          type: string
+          description: LinkedIn profile URL
+          example: https://www.linkedin.com/in/johndoe
+    inline_response_404_2:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Portfolio not found for the given user ID.
+    inline_response_500_2:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Error fetching portfolio.
+    inline_response_200_24:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Portfolio successfully deleted.
+    inline_response_400_16:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Invalid portfolio ID or portfolio does not belong to the user.
+    inline_response_404_3:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Portfolio not found for the user.
+    inline_response_500_3:
+      type: object
+      properties:
+        message:
+          type: string
+          example: An error occurred while deleting the portfolio.
+    portfolio_pID_body:
+      type: object
+      properties:
+        uID:
+          type: integer
+          description: The user ID associated with the portfolio
+          example: 1
+        displayName:
+          type: string
+          description: Display name of the portfolio
+          example: John Doe Portfolio
+        description:
+          type: string
+          description: Description of the portfolio
+          example: This portfolio showcases my work in web development.
+        technologies:
+          type: string
+          description: Technologies used in the portfolio
+          example: "HTML, CSS, JavaScript, React"
+        github:
+          type: string
+          description: GitHub profile URL
+          example: https://github.com/johndoe
+        linkedin:
+          type: string
+          description: LinkedIn profile URL
+          example: https://www.linkedin.com/in/johndoe
+    inline_response_200_25:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Portfolio updated successfully.
+    inline_response_404_4:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Portfolio not found for the given portfolio ID.
+    inline_response_500_4:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Error updating portfolio.
+    inline_response_200_26:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Portfolio visibility successfully updated.
+    inline_response_400_17:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Invalid visibility status provided.
+    inline_response_404_5:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Portfolio not found.
+    inline_response_500_5:
+      type: object
+      properties:
+        message:
+          type: string
+          example: An error occurred while updating portfolio visibility.
+    inline_response_200_27:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Portfolio visibility successfully set to 'Only Me'.
+    inline_response_500_6:
+      type: object
+      properties:
+        message:
+          type: string
+          example: An error occurred while setting portfolio visibility.
+    project_body:
+      type: object
+      properties:
+        pID:
+          type: integer
+          description: The unique ID of the project to be updated
+          example: 101
+        title:
+          type: string
+          description: The updated title of the project
+          example: Updated Web Application
+        description:
+          type: string
+          description: Updated description of the project
+          example: "Updated responsive web application built using React, Node.js, and Express."
+        technologies:
+          type: string
+          description: Updated list of technologies used in the project
+          example: "React, Node.js, MongoDB, Express"
+        link:
+          type: string
+          description: Updated URL to the project or repository
+          example: https://github.com/user/updated-project
+        portfolio_id:
+          type: integer
+          description: The ID of the portfolio to which this project belongs
+          example: 101
+    inline_response_200_28:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Project updated successfully.
+    inline_response_400_18:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Invalid project data provided.
+    inline_response_404_6:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Project not found.
+    inline_response_500_7:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Error updating project.
+    project_body_1:
+      type: object
+      properties:
+        title:
+          type: string
+          description: The title of the project
+          example: Web Application
+        description:
+          type: string
+          description: A detailed description of the project
+          example: A responsive web application built using React and Node.js.
+        technologies:
+          type: string
+          description: List of technologies used in the project
+          example: "React, Node.js, MongoDB"
+        link:
+          type: string
+          description: URL to the project or repository
+          example: https://github.com/user/project
+        portfolio_id:
+          type: integer
+          description: The ID of the portfolio to which this project belongs
+          example: 101
+    inline_response_201_1:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Project created successfully.
+        projectID:
+          type: integer
+          description: The unique ID of the created project
+          example: 202
+    inline_response_500_8:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Error creating project.
+    inline_response_200_29:
+      type: object
+      properties:
+        pID:
+          type: integer
+          description: The unique ID of the project
+          example: 101
+        title:
+          type: string
+          description: The title of the project
+          example: Web Application
+        description:
+          type: string
+          description: A detailed description of the project
+          example: A responsive web application built using React and Node.js.
+        technologies:
+          type: string
+          description: Technologies used in the project
+          example: "React, Node.js, MongoDB"
+        link:
+          type: string
+          description: URL to the project or repository
+          example: https://github.com/user/project
+        portfolio_id:
+          type: integer
+          description: The ID of the portfolio to which the project belongs
+          example: 101
+    inline_response_404_7:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Project not found for the provided project ID.
+    inline_response_500_9:
+      type: object
+      properties:
+        message:
+          type: string
+          example: An error occurred while retrieving project details.
+    inline_response_200_30:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Project successfully deleted.
+    inline_response_400_19:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Invalid project ID provided.
+    inline_response_500_10:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Error deleting project.
+    event_participate_body:
+      type: object
+      properties:
+        uID:
+          type: integer
+          description: The unique ID of the user (student) participating in the event.
+          example: 1
+        eID:
+          type: integer
+          description: The unique ID of the event the student is participating in.
+          example: 101
+        point:
+          type: integer
+          description: Points assigned to the student for participating in the event.
+          example: 10
+    inline_response_201_2:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Participation successfully recorded.
+    inline_response_400_20:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Invalid participation data provided.
+    inline_response_404_8:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Event or student not found.
+    inline_response_500_11:
+      type: object
+      properties:
+        message:
+          type: string
+          example: An error occurred while recording participation.
+    inline_response_200_31:
+      type: object
+      properties:
+        uID:
+          type: integer
+          description: The unique ID of the user (student) who participated in the event.
+          example: 10
+        eID:
+          type: integer
+          description: The unique ID of the event.
+          example: 101
+        point:
+          type: integer
+          description: The points awarded to the participant.
+          example: 50
+    inline_response_404_9:
+      type: object
+      properties:
+        message:
+          type: string
+          example: No participants found for the specified event.
+    inline_response_500_12:
+      type: object
+      properties:
+        message:
+          type: string
+          example: An error occurred while fetching participants.
+    inline_response_200_32:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The unique ID of the participation record.
+          example: 1
+        eID:
+          type: integer
+          description: The unique ID of the event.
+          example: 101
+        title:
+          type: string
+          description: The title of the event.
+          example: Introduction to Web Development
+        description:
+          type: string
+          description: A brief description of the event.
+          example: A workshop on the basics of web development.
+        date:
+          type: string
+          description: The date and time of the event.
+          format: date-time
+          example: 2024-12-25T10:00:00Z
+        type:
+          type: string
+          description: The type of the event.
+          example: workshop
+          enum:
+          - interview
+          - workshop
+        point:
+          type: integer
+          description: The points awarded to the user for this event.
+          example: 50
+    inline_response_404_10:
+      type: object
+      properties:
+        message:
+          type: string
+          example: No participation records found for the specified user.
+    inline_response_500_13:
+      type: object
+      properties:
+        message:
+          type: string
+          example: An error occurred while fetching participation details.
+    inline_response_200_33:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Participation record successfully deleted.
+    inline_response_404_11:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Participation record not found with the given ID.
+    inline_response_500_14:
+      type: object
+      properties:
+        message:
+          type: string
+          example: An error occurred while deleting the participation record.
+    announcement_body:
+      type: object
+      properties:
+        subject:
+          type: string
+          description: The subject of the announcement
+          example: Team Meeting Update
+        message:
+          type: string
+          description: The detailed message of the announcement
+          example: The weekly team meeting has been rescheduled to Friday at 3 PM.
+        scheduled_datetime:
+          type: string
+          description: The date and time when the announcement should be sent
+          format: date-time
+          example: 2024-12-25T15:00:00Z
+        is_sent:
+          type: boolean
+          description: Indicates if the announcement has been sent
+          example: false
+        created_by:
+          type: integer
+          description: The user ID of the creator
+          example: 101
+    inline_response_201_3:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Announcement successfully created.
+        aID:
+          type: integer
+          description: The unique ID of the created announcement
+          example: 1
+    inline_response_400_21:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Invalid announcement data provided.
+    inline_response_500_15:
+      type: object
+      properties:
+        message:
+          type: string
+          example: An error occurred while creating the announcement.
+    inline_response_200_34:
+      type: object
+      properties:
+        aID:
+          type: integer
+          description: The unique ID of the announcement
+          example: 1
+        subject:
+          type: string
+          description: The subject of the announcement
+          example: Team Meeting Update
+        message:
+          type: string
+          description: The detailed message of the announcement
+          example: The weekly team meeting has been rescheduled to Friday at 3 PM.
+        scheduled_datetime:
+          type: string
+          description: The date and time when the announcement was scheduled
+          format: date-time
+          example: 2024-12-25T15:00:00Z
+        is_sent:
+          type: boolean
+          description: Indicates if the announcement has been sent
+          example: false
+        created_by:
+          type: integer
+          description: The ID of the user who created the announcement
+          example: 101
+        mail:
+          type: string
+          description: The email address used for the announcement
+          example: admin@example.com
+    inline_response_404_12:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Announcement not found for the provided aID.
+    inline_response_500_16:
+      type: object
+      properties:
+        message:
+          type: string
+          example: An error occurred while retrieving the announcement.
+    inline_response_200_35:
+      type: object
+      properties:
+        aID:
+          type: integer
+          description: The unique ID of the announcement
+          example: 1
+        subject:
+          type: string
+          description: The subject of the announcement
+          example: Batch Schedule Update
+        message:
+          type: string
+          description: The detailed message of the announcement
+          example: The batch schedule has been updated. Please check your email.
+        scheduled_datetime:
+          type: string
+          description: The date and time when the announcement was scheduled
+          format: date-time
+          example: 2024-12-25T15:00:00Z
+        is_sent:
+          type: boolean
+          description: Indicates if the announcement has been sent
+          example: true
+        created_by:
+          type: integer
+          description: The ID of the user who created the announcement
+          example: 101
+    inline_response_404_13:
+      type: object
+      properties:
+        message:
+          type: string
+          example: No announcements found for the provided batch ID.
+    inline_response_500_17:
+      type: object
+      properties:
+        message:
+          type: string
+          example: An error occurred while retrieving announcements.
+    announcement_batches_body:
+      type: object
+      properties:
+        aID:
+          type: integer
+          description: The unique ID of the announcement to be assigned
+          example: 1
+        bID:
+          type: integer
+          description: The unique ID of the batch to which the announcement will be assigned
+          example: 101
+    inline_response_201_4:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Announcement successfully assigned to the batch.
+    inline_response_400_22:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Invalid announcement or batch ID provided.
+    inline_response_404_14:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Announcement or batch not found.
+    inline_response_500_18:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Error assigning announcement to the batch.
+    announcement_abID_body:
+      type: object
+      properties:
+        aID:
+          type: integer
+          description: The unique ID of the announcement
+          example: 1
+        bID:
+          type: integer
+          description: The unique ID of the batch
+          example: 101
+        created_at:
+          type: string
+          description: The date and time when the announcement was assigned
+          format: date-time
+          example: 2024-12-21T15:00:00Z
+    inline_response_200_36:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Announcement-batch assignment updated successfully.
+    inline_response_400_23:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Invalid assignment or batch ID provided.
+    inline_response_404_15:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Announcement-batch assignment not found.
+    inline_response_500_19:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Error updating announcement-batch assignment.
+    inline_response_200_37:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Announcement batch successfully deleted.
+    inline_response_404_16:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Announcement batch not found for the given ID.
+    inline_response_500_20:
+      type: object
+      properties:
+        message:
+          type: string
+          example: An error occurred while deleting the announcement batch.
+    feedbacks_body:
+      type: object
+      properties:
+        description:
+          type: string
+          description: The description of the feedback
+          example: Great work on the recent project!
+        type:
+          type: string
+          description: "Type of feedback, either individual or group"
+          example: individual
+          enum:
+          - individual
+          - group
+        created_by:
+          type: integer
+          description: The ID of the user who created the feedback
+          example: 1
+    inline_response_201_5:
+      type: object
+      properties:
+        fID:
+          type: integer
+          description: The unique ID of the created feedback entry
+          example: 101
+        message:
+          type: string
+          example: Feedback created successfully.
+    inline_response_400_24:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Invalid feedback data provided.
+    inline_response_500_21:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Error creating feedback.
+    feedbacks_fID_body:
+      type: object
+      properties:
+        description:
+          type: string
+          description: The updated description of the feedback
+          example: Updated feedback about the recent project presentation.
+        type:
+          type: string
+          description: "Updated type of feedback, either individual or group"
+          example: group
+          enum:
+          - individual
+          - group
+    inline_response_200_38:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Feedback updated successfully.
+    inline_response_404_17:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Feedback not found.
+    inline_response_500_22:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Error updating feedback.
+    inline_response_200_39:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Feedback successfully assigned to the student event.
+    inline_response_400_25:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Invalid student event or feedback ID provided.
+    inline_response_404_18:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Student event or feedback not found.
+    inline_response_500_23:
+      type: object
+      properties:
+        message:
+          type: string
+          example: An error occurred while assigning feedback to the student event.
+    inline_response_200_40:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Feedback assignment successfully removed from the student event.
+    inline_response_400_26:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Invalid feedback assignment ID provided.
+    inline_response_404_19:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Feedback assignment not found for the given ID.
+    inline_response_500_24:
+      type: object
+      properties:
+        message:
+          type: string
+          example: An error occurred while removing the feedback assignment.
+    suggestions_body:
+      required:
+      - description
+      - title
+      type: object
+      properties:
+        title:
+          type: string
+          description: Title of the suggestion
+        description:
+          type: string
+          description: Description of the suggestion
+    inline_response_201_6:
+      type: object
+      properties:
+        suID:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        date:
+          type: string
+          format: date-time
+        is_expired:
+          type: boolean
+        is_active:
+          type: boolean
+        vote_count:
+          type: integer
+    inline_response_200_41:
+      type: object
+      properties:
+        message:
+          type: string
+        vote_count:
+          type: integer
