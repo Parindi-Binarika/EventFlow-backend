@@ -3,6 +3,7 @@ package com.example.eventFlowBackend.controller;
 import com.example.eventFlowBackend.entity.Event;
 import com.example.eventFlowBackend.entity.EventType;
 import com.example.eventFlowBackend.payload.AnnouncementDTO;
+import com.example.eventFlowBackend.payload.AttendanceDTO;
 import com.example.eventFlowBackend.payload.EventDTO;
 import com.example.eventFlowBackend.service.AnnouncementService;
 import com.example.eventFlowBackend.service.EventService;
@@ -41,10 +42,10 @@ public class EventController {
         }
     }
 
-    @PostMapping("/attendance/{eID}/{uID}")
-    public ResponseEntity<?> markAttendance(@PathVariable Integer eID, @PathVariable Integer uID) {
+    @PostMapping("/attendance/{eID}")
+    public ResponseEntity<?> markAttendance(@PathVariable Integer eID, @RequestBody AttendanceDTO attendance) {
         try {
-            eventService.markAttendance(eID, Long.valueOf(uID));
+            eventService.markAttendance(eID, attendance);
             return ResponseEntity.ok("Attendance marked successfully");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Failed to mark attendance: " + e.getMessage());
