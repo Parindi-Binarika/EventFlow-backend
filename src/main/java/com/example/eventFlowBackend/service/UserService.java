@@ -52,6 +52,9 @@ public class UserService {
             user.setEmail(updatedUser.getEmail());
             user.setMobile(updatedUser.getMobile());
             user.setNic(updatedUser.getNic());
+            if (!updatedUser.getPassword().isEmpty()){
+                user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+            }
             return userRepository.save(user);
         }).orElseThrow(() -> new RuntimeException("User not found"));
     }
