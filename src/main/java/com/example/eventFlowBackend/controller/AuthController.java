@@ -38,7 +38,7 @@ public class AuthController {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             User user = userService.findByEmail(request.getEmail()).orElseThrow(() -> new RuntimeException("User not found"));
             String token = jwtUtil.generateToken(request.getEmail(), user.getRole());
-            return ResponseEntity.ok(new AuthResponse(token, user.getUID()));
+            return ResponseEntity.ok(new AuthResponse(token, user.getUID(), user.getRole().name()));
         } catch (AuthenticationException e) {
             return ResponseEntity.status(401).body("Invalid email/password");
         }
