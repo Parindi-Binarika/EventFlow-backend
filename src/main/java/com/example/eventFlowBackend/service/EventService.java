@@ -85,9 +85,21 @@ public class EventService {
         }
     }
 
-    public Event getEvent(Integer eID) {
+    public EventDTO getEvent(Integer eID) {
         try {
-            return eventRepository.findById(eID).get();
+            Event event = eventRepository.findById(eID).get();
+            EventDTO eventDTO = new EventDTO();
+            eventDTO.setEID(event.getEID());
+            eventDTO.setTitle(event.getTitle());
+            eventDTO.setDescription(event.getDescription());
+            eventDTO.setStartDateTime(event.getStartDateTime());
+            eventDTO.setEventType(event.getEventType());
+            eventDTO.setIsActive(event.getIsActive());
+            eventDTO.setCreatedBy(event.getCreatedBy().getUID().intValue());
+            if (event.getAnnouncement() != null) {
+                eventDTO.setAID(event.getAnnouncement().getAID());
+            }
+            return eventDTO;
         } catch (Exception e) {
             throw new RuntimeException("Failed to get event");
         }

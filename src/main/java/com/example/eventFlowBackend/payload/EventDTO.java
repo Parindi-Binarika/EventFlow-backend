@@ -16,4 +16,6 @@ public class EventDTO {
     private Integer group_fID;
     private Integer createdBy;
     private Integer aID;
+
+
 }
