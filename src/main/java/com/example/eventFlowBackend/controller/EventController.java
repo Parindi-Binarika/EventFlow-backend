@@ -168,7 +168,7 @@ public class EventController {
     }
 
     @GetMapping("/{eID}")
-    public ResponseEntity<Event> getEvent(@PathVariable Integer eID) {
+    public ResponseEntity<EventDTO> getEvent(@PathVariable Integer eID) {
         try {
             return ResponseEntity.ok(eventService.getEvent(eID));
         } catch (Exception e) {

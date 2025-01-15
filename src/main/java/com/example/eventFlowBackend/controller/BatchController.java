@@ -90,7 +90,7 @@ public class BatchController {
         }
     }
 
-    @GetMapping("allBatches/{uID}")
+    @GetMapping("/allBatches/{uID}")
     public ResponseEntity<?> getAllBatches(@PathVariable Long uID) {
         try {
             return ResponseEntity.ok(batchService.findBatchesByUser(uID));
