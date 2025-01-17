@@ -65,3 +65,7 @@ jobs:
             pkill -f eventFlowBackend.jar || true
             nohup java -jar /home/$USER/eventFlowBackend.jar > /home/$USER/eventFlowBackend.log 2>&1 &
           EOF
+      # Step 10: Cleanup Private Key
+      - name: Cleanup Private Key
+        if: always() # Ensure this step runs even if previous steps fail
+        run: rm -f private_key.pem
