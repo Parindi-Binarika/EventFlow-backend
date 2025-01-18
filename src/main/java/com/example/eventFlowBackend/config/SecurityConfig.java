@@ -55,6 +55,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/announcements/**").hasRole("admin")
 
                         // Event Endpoints
+                        .requestMatchers("/api/event/attendance/user/{uid}").hasAnyRole("student", "admin")
                         .requestMatchers("/api/event/interview/**", "/api/event/workshop/**").hasAnyRole("lecturer", "admin")
                         .requestMatchers("/api/event/attendance/{eID}").hasRole("admin")
                         .requestMatchers("/api/event/{eID}", "/api/event/create/announcement/{eID}").hasAnyRole("lecturer", "admin")
