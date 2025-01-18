@@ -56,6 +56,7 @@ public class UserController {
             userService.update(id, updatedUser);
             return ResponseEntity.status(200).body("User updated successfully");
         } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
             return ResponseEntity.status(400).body("User not updated");
         }
     }

@@ -33,16 +33,46 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+                        // Authentication Endpoints
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/users/**").permitAll()
-                        .requestMatchers("/api/batches/**").permitAll()
-                        .requestMatchers("/api/student-batches/**").permitAll()
-                        .requestMatchers("/api/announcements/**").permitAll()
-                        .requestMatchers("/api/event/**").permitAll()
-                        .requestMatchers("/api/feedback/**").permitAll()
-                        .requestMatchers("/api/suggestions/**").permitAll()
-                        .requestMatchers("/api/portfolios/**").permitAll()
-                        .requestMatchers("/api/projects/**").permitAll()
+
+                        // User Endpoints
+                        .requestMatchers("/api/users/{id}").hasAnyRole("student", "lecturer", "admin")
+                        .requestMatchers("/api/users/search/{nic}").hasAnyRole("lecturer", "admin")
+                        .requestMatchers("/api/users/**").hasRole("admin")
+
+                        // Batch Endpoints
+                        .requestMatchers("/api/batches/{id}").hasAnyRole("student", "lecturer", "admin")
+                        .requestMatchers("/api/batches/allStudents/{bID}").hasAnyRole("lecturer", "admin")
+                        .requestMatchers("/api/batches/allBatches/{uID}").hasAnyRole("student", "lecturer", "admin")
+                        .requestMatchers("/api/batches/**").hasRole("admin")
+
+                        // Announcement Endpoints
+                        .requestMatchers("/api/announcements/{aid}").hasAnyRole("admin", "student", "lecturer")
+                        .requestMatchers("/api/announcements/created_by/{uid}").hasAnyRole("lecturer", "admin")
+                        .requestMatchers("/api/announcements/assigned/**").hasAnyRole("lecturer", "admin")
+                        .requestMatchers("/api/announcements/assigned/announcement/**").hasAnyRole("student", "admin")
+                        .requestMatchers("/api/announcements/**").hasRole("admin")
+
+                        // Event Endpoints
+                        .requestMatchers("/api/event/attendance/user/{uid}").hasAnyRole("student", "admin")
+                        .requestMatchers("/api/event/interview/**", "/api/event/workshop/**").hasAnyRole("lecturer", "admin")
+                        .requestMatchers("/api/event/attendance/{eID}").hasRole("admin")
+                        .requestMatchers("/api/event/{eID}", "/api/event/create/announcement/{eID}").hasAnyRole("lecturer", "admin")
+                        .requestMatchers("/api/event/attendance/**", "/api/event/complete/{eID}").hasAnyRole("lecturer", "admin")
+
+                        // Feedback Endpoints
+                        .requestMatchers("/api/feedback/{eID}/{uID}").hasAnyRole("student", "admin")
+                        .requestMatchers("/api/feedback/**").hasAnyRole("lecturer", "admin")
+
+                        // Suggestion Endpoints
+                        .requestMatchers("/api/suggestions/**").hasAnyRole("student", "lecturer", "admin")
+
+                        // Portfolio and Project Endpoints
+                        .requestMatchers("/api/portfolios/public/**").permitAll()
+                        .requestMatchers("/api/portfolios/**", "/api/projects/**").hasAnyRole("student", "admin")
+
+                        // Catch-All Rule
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

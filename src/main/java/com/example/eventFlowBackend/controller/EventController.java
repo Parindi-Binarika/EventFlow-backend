@@ -7,7 +7,9 @@ import com.example.eventFlowBackend.payload.AttendanceDTO;
 import com.example.eventFlowBackend.payload.EventDTO;
 import com.example.eventFlowBackend.service.AnnouncementService;
 import com.example.eventFlowBackend.service.EventService;
+import org.springframework.context.annotation.Role;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,7 +23,6 @@ public class EventController {
         this.eventService = eventService;
         this.announcementService = announcementService;
     }
-
     @PostMapping("/interview")
     public ResponseEntity<?> createInterview(@RequestBody EventDTO event) {
         try {

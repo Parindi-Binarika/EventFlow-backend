@@ -47,6 +47,8 @@ public class UserService {
     }
 
     public void update(Long id, UserDTO updatedUser) {
+        System.out.println("----------------------------");
+        System.out.println(id);
         userRepository.findById(id).map(user -> {
             user.setName(updatedUser.getName());
             user.setEmail(updatedUser.getEmail());
